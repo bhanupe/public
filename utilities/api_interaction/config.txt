@@ -1,2 +1,0 @@
-API_KEY=AIzaSyAFE9MBE2RTHhWjQA6_nu4a7A3kmFRAzfk
-API_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
