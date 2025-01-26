@@ -26,6 +26,7 @@ To use the Gemini API in this project:
    - Add the following line to the file:
      ```
      API_KEY=your_api_key_here
+     API_URL=your_api_url_here
      ```
 Running Python code to 
 
