@@ -18,7 +18,8 @@ To use the Gemini API in this project:
 1. **Create a Gemini API Key**:
    - Sign up or log in to the [Gemini Developer Portal](https://developers.gemini.com).
    - Navigate to the API Keys section.
-   - Create a new API key and securely note down the **API Key**.
+   - Create a new API key and securely note down the **API Key**. 
+   - Copy API URL of Google's generative language model service and note it down as        **API URL**.
 
 2. **Store the API Key**:
    - Create a `config.txt` file in the `utilities/api_interaction` folder.
