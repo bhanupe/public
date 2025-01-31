@@ -34,7 +34,7 @@ Reads reviews from the files.
 Constructs a question dynamically to analyze the sentiment of each review.
 Sends the question to the Gemini AI API for processing.
 Logs the question, review, and API response to a file.
-Output results will be processed in chunks in the terminal and specified output file (output.txt).
+Output results will be processed and specified output file (output.txt) in chunks.
 
 The output and classify_reviews.csv files will be uploaded to Drive 
 
