@@ -72,7 +72,7 @@ def read_reviews(file_path, chunk_size, max_chunks):
     """
     Read reviews from a file in chunks and return them as a list.
     """
-    print(f"Reading {chunk_size * max_chunks} reviews from {file_path}...")
+    print(f"Reading {chunk_size * max_chunks} from {file_path}...")
     reviews = []
     try:
         with open(file_path, "r", encoding="utf-8") as file:
