@@ -38,7 +38,7 @@ API_KEY, API_URL = load_api_config(CONFIG_FILE)
 
 def process_review_text(review):
     """ Cleans review by removing sentiment labels & splitting at 'It'. """
-    review = review.split(",")[0].split("It")[0].strip()
+    review = review.split('\t')[0]
     return review
 
 def ask_gemini(api_url, api_key, question, max_retries=MAX_RETRIES):
@@ -67,21 +67,12 @@ def ask_gemini(api_url, api_key, question, max_retries=MAX_RETRIES):
     print("❌ Max retries reached. Skipping request.")
     return None
 
-<<<<<<< HEAD
-def read_reviews(file_path, chunk_size, max_chunks):
-    """
-    Read reviews from a file in chunks and return them as a list.
-    """
-    print(f"Reading {chunk_size * max_chunks} from {file_path}...")
-    reviews = []
-=======
 def read_reviews(file_path, chunk_size, max_reviews):
     """ Reads reviews from file, cleaning them before sending to API. """
     print(f"📖 Reading up to {max_reviews} reviews from {file_path}...")
     lines_read = 0
     chunk = []
 
->>>>>>> 2c4db1e (Updated gemini_api.py file)
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             next(file)  # Skip header row
