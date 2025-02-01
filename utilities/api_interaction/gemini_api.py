@@ -37,12 +37,7 @@ def load_api_config(config_file):
 API_KEY, API_URL = load_api_config(CONFIG_FILE)
 
 def process_review_text(review):
-    """ Cleans review by removing sentiment labels & splitting at 'It'. """
-<<<<<<< HEAD
     review = review.split('\t')[0]
-=======
-    review = review.split(",")[0].split("It")[0].strip()
->>>>>>> 2c4db1e4d121d8c14ebd05f9a740d839adc50a4e
     return review
 
 def ask_gemini(api_url, api_key, question, max_retries=MAX_RETRIES):
