@@ -115,7 +115,8 @@ def process_reviews(api_url, api_key, reviews, output_file):
             results.append(f"Review: {review} | Response: {response}")
         else:
             print("⚠️ Skipped a review due to API error.")
-
+            
+    # Adding a request delay to prevent overwhelming the API and avoid hitting rate limits
         time.sleep(REQUEST_DELAY)
         
     # Save all responses in one go
