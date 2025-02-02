@@ -7,7 +7,7 @@ CONFIG_FILE = "config.txt" #Configuration file with API details
 OUTPUT_FILE = "output.txt" # File to save API responses
 REVIEWS_FILE = "classify_reviews.csv" #Input file containing reviews
 RATE_LIMIT_SLEEP_TIME = 60 # Default sleep time when rate limit is hit
-REQUEST_DELAY = 2 # Delay (in seconds) between consecutive API requests
+REQUEST_DELAY = 4 # Delay (in seconds) between consecutive API requests
 CHUNK_SIZE = 100 # Number of reviews per chunk
 MAX_CHUNKS = 250 # Number of chunks to process
 MAX_REVIEWS = 5000 # Maximum reviews to process
@@ -37,8 +37,6 @@ def load_api_config(config_file):
 
     return api_key, api_url
 
-# Load API credentials
-API_KEY, API_URL = load_api_config(CONFIG_FILE)
 
 def process_review_text(review):
     review = review.split('\t')[0]
@@ -125,7 +123,10 @@ def process_reviews(api_url, api_key, reviews, output_file):
 
 # Main Execution
 if __name__ == "__main__":
+   
     try:
+        # Load API credentials
+        API_KEY, API_URL = load_api_config(CONFIG_FILE)
         print(f"🚀 Processing up to {MAX_REVIEWS} reviews in {MAX_CHUNKS} chunks...")
 
         for chunk_index, review_chunk in enumerate(read_reviews(REVIEWS_FILE, CHUNK_SIZE, MAX_REVIEWS), start=1):
