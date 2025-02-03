@@ -1,6 +1,7 @@
 import pandas as pd
 
 from analytical_processors.analysis.data_analysis import sales, sales_normalization, sales_by_time
+from analytical_processors.visualization.visualize import bar_plot, line_plot
 from analytical_processors.wrangling.insights import explain, group_by_features
 from analytical_processors.wrangling.normalization import min_max_normalization
 from analytical_processors.wrangling.prepare import fill_null, convert_data_type
@@ -46,6 +47,13 @@ if __name__ == "__main__":
         print(f"Weekly sales_normalization={data.groupby(weekly_report)['sales_normalization'].sum()}")
         quarterly_report_sales_normalization = sales_by_time(data, 'quarter')
         print(f"Quarterly sales_normalization={data.groupby(quarterly_report)['sales_normalization'].sum()}")
+
+        bar_plot(data, 'State', 'Sales', 'Group')
+        bar_plot(data, 'Group', 'Sales', 'State')
+        sorted_data = data.sort_values(['Time'], ascending=False)
+        line_plot(sorted_data.groupby('Time')['Sales'].sum().reset_index())
+
+
 
 
 
