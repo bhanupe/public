@@ -17,7 +17,6 @@ def group_by_features(data):
     # your analysis.
     # Grouping the data by 'State' and 'Time' 'Group' to analyze total sales and units sold
     data_grouped_group = data.groupby(['State', 'Time', 'Group']).agg({'Sales': 'sum', 'Unit': 'sum'}).reset_index()
-    print(data_grouped_group)
     sorted_group = data_grouped_group.sort_values(by='Sales', ascending=False)
     print('Grouping the data by State and Time Group to analyze total sales and units sold')
     print(sorted_group)

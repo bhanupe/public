@@ -39,7 +39,9 @@ if __name__ == "__main__":
         data = convert_data_type(data,data.Date,'datetime')
         print('After converting datatime datatype')
         print(data.info())
-        min_max_normalization(data)
+        min_max_normalization(data,'Sales','sales_normalization')
+        print('after adding sales_normalization')
+        print(data[['Unit', 'Sales', 'sales_normalization']].agg(['min', 'max']))
         group_by_features(data)
         grouped_data_by_state = sales(data,'State')
         print( f"Maximum Sales in State={grouped_data_by_state.idxmax()}")
@@ -99,7 +101,6 @@ def group_by_features(data):
     # your analysis.
     # Grouping the data by 'State' and 'Time' 'Group' to analyze total sales and units sold
     data_grouped_group = data.groupby(['State', 'Time', 'Group']).agg({'Sales': 'sum', 'Unit': 'sum'}).reset_index()
-    print(data_grouped_group)
     sorted_group = data_grouped_group.sort_values(by='Sales', ascending=False)
     print('Grouping the data by State and Time Group to analyze total sales and units sold')
     print(sorted_group)
@@ -130,11 +131,10 @@ from sklearn.preprocessing import MinMaxScaler
 # or normalization. Execute the preferred normalization method and
 # present the resulting data. (Normalization is the preferred approach for this
 # problem.)  Normalization (Min-Max Scaling)	When data needs to be in a fixed range (0 to 1)	Xnormalized=Xmax−XminX−Xmin
-def min_max_normalization(data):
+def min_max_normalization(data,column_name,new_column_name_to_be_added):
     scaler = MinMaxScaler()
     # Apply normalization to 'Sales' column
-    data['sales_normalization'] = scaler.fit_transform(data[['Sales']])
-    print(data[['Unit','Sales','sales_normalization']].agg(['min','max']))
+    data[new_column_name_to_be_added] = scaler.fit_transform(data[[column_name]])
     return data
 ```
 
@@ -193,7 +193,7 @@ def line_plot(grouped_data):
 python ./main.py
 ```
 ## Output
-```commandline
+```
 Shape : 	(7560, 6)
 Row Labels : 	RangeIndex(start=0, stop=7560, step=1)
 Column Names : 
@@ -251,23 +251,10 @@ Data columns (total 6 columns):
 dtypes: datetime64[ns](1), int64(2), object(3)
 memory usage: 354.5+ KB
 None
+after adding sales_normalization
      Unit   Sales  sales_normalization
 min     2    5000                  0.0
 max    65  162500                  1.0
-   State        Time     Group    Sales  Unit
-0    NSW   Afternoon      Kids  6187500  2475
-1    NSW   Afternoon       Men  6512500  2605
-2    NSW   Afternoon   Seniors  5985000  2394
-3    NSW   Afternoon     Women  6425000  2570
-4    NSW     Evening      Kids  6132500  2453
-..   ...         ...       ...      ...   ...
-79    WA     Evening     Women  1810000   724
-80    WA     Morning      Kids  1842500   737
-81    WA     Morning       Men  2007500   803
-82    WA     Morning   Seniors  1950000   780
-83    WA     Morning     Women  1767500   707
-
-[84 rows x 5 columns]
 Grouping the data by State and Time Group to analyze total sales and units sold
    State        Time     Group    Sales  Unit
 70   VIC     Morning   Seniors  9057500  3623
