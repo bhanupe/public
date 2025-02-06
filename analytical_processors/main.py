@@ -48,14 +48,9 @@ if __name__ == "__main__":
         quarterly_report_sales_normalization = sales_by_time(data, 'quarter')
         print(f"Quarterly sales_normalization={data.groupby(quarterly_report)['sales_normalization'].sum()}")
 
-        bar_plot(data, 'State', 'Sales', 'Group')
-        bar_plot(data, 'Group', 'Sales', 'State')
+        bar_plot(data, 'State', 'Sales', 'Group', 'State-wise sales analysis')
+        bar_plot(data, 'Group', 'Sales', 'State', 'Group-wise sales analysis')
         sorted_data = data.sort_values(['Time'], ascending=False)
         line_plot(sorted_data.groupby('Time')['Sales'].sum().reset_index())
-
-
-
-
-
     except Exception as e:
         print(f"❌ Fatal error: {e}")

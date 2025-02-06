@@ -1,19 +1,23 @@
-## Modules
-### requirements.txt
+# Authors
+
+## Vijay Bhanu Peddimsetti, Vinothkumar Ganesan, Nagaswetha Akula
+
+# Modules
+## requirements.txt
 ```
 pandas==2.2.3
 seaborn==0.13.2
 scikit-learn==1.6.1
 ```
 
-#### Environment preparation
+### Environment preparation
 please install the requirements 
 ```
 python -m pip install --upgrade pip
 python install -r requirements.txt
 ```
 
-### Sales Assignment - main.py
+## Sales Assignment - main.py
 ```
 import pandas as pd
 
@@ -65,16 +69,16 @@ if __name__ == "__main__":
         quarterly_report_sales_normalization = sales_by_time(data, 'quarter')
         print(f"Quarterly sales_normalization={data.groupby(quarterly_report)['sales_normalization'].sum()}")
 
-        bar_plot(data, 'State', 'Sales', 'Group')
-        bar_plot(data, 'Group', 'Sales', 'State')
+        bar_plot(data, 'State', 'Sales', 'Group', 'State-wise sales analysis')
+        bar_plot(data, 'Group', 'Sales', 'State', 'Group-wise sales analysis')
         sorted_data = data.sort_values(['Time'], ascending=False)
         line_plot(sorted_data.groupby('Time')['Sales'].sum().reset_index())
     except Exception as e:
         print(f"❌ Fatal error: {e}")
 ```
 
-### Wrangling
-#### wrangling/insights.py
+## Wrangling
+### wrangling/insights.py
 ```
 import pandas as pd
 
@@ -108,7 +112,7 @@ def group_by_features(data):
     print(data.select_dtypes(include = 'int').mode())
     return data
 ```
-#### wrangling/prepare.py
+### wrangling/prepare.py
 ```
 import pandas as pd
 def fill_null(data,column,value):
@@ -118,7 +122,7 @@ def convert_data_type(data,column,dest_type):
         data.Date = pd.to_datetime(column)
         return data
 ```
-#### wrangling/normalization.py
+### wrangling/normalization.py
 ```
 from sklearn.preprocessing import MinMaxScaler
 
@@ -134,8 +138,8 @@ def min_max_normalization(data):
     return data
 ```
 
-### Analysis
-#### analysis/data_analysis.py
+## Analysis
+### analysis/data_analysis.py
 ```
 # Identify the group with the highest sales and the group with the lowest
 # sales based on the data provided.
@@ -163,11 +167,11 @@ import seaborn as sb
 
 import matplotlib.pyplot as plt
 
-def bar_plot(data,xcolumn,ycolumn,huecolumn):
+def bar_plot(data,xcolumn,ycolumn,huecolumn,title):
     plt.figure(figsize=(12, 8))
     sorted_data = data.sort_values([ycolumn], ascending=False)
     sb.barplot(x=xcolumn, y=ycolumn, hue=huecolumn, data=sorted_data)
-    plt.title('State-wise Sales Analysis by Group')
+    plt.title(title)
     plt.show()
 
 def line_plot(grouped_data):
@@ -176,10 +180,182 @@ def line_plot(grouped_data):
     plt.figure(figsize=(10, 6))
     sb.lineplot(data=df_time_sales, x="Time", y="Sales", marker="o", linewidth=2, color="b")
     # sb.lineplot(x=df_time_sales.index, y=grouped_data.values)
-    plt.title('Peak and Off-Peak Sales Analysis by Time of Day')
+    plt.title('Time-of-the-day analysis')
     plt.xlabel('Time of Day')
     plt.ylabel('Total Sales')
     plt.xticks(rotation=45)
     plt.grid(True)
     plt.show()
 ```
+
+# Output
+```commandline
+Shape : 	(7560, 6)
+Row Labels : 	RangeIndex(start=0, stop=7560, step=1)
+Column Names : 
+Index(['Date', 'Time', 'State', 'Group', 'Unit', 'Sales'], dtype='object')
+DataType : 
+Date     object
+Time     object
+State    object
+Group    object
+Unit      int64
+Sales     int64
+dtype: object
+Date     0
+Time     0
+State    0
+Group    0
+Unit     0
+Sales    0
+dtype: int64
+column which has null is
+Series([], dtype: int64)
+Shape : 	(7560, 6)
+Row Labels : 	RangeIndex(start=0, stop=7560, step=1)
+Column Names : 
+Index(['Date', 'Time', 'State', 'Group', 'Unit', 'Sales'], dtype='object')
+DataType : 
+Date     object
+Time     object
+State    object
+Group    object
+Unit      int64
+Sales     int64
+dtype: object
+Date     0
+Time     0
+State    0
+Group    0
+Unit     0
+Sales    0
+dtype: int64
+column which has null is
+Series([], dtype: int64)
+After converting datatime datatype
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 7560 entries, 0 to 7559
+Data columns (total 6 columns):
+ #   Column  Non-Null Count  Dtype         
+---  ------  --------------  -----         
+ 0   Date    7560 non-null   datetime64[ns]
+ 1   Time    7560 non-null   object        
+ 2   State   7560 non-null   object        
+ 3   Group   7560 non-null   object        
+ 4   Unit    7560 non-null   int64         
+ 5   Sales   7560 non-null   int64         
+dtypes: datetime64[ns](1), int64(2), object(3)
+memory usage: 354.5+ KB
+None
+     Unit   Sales  sales_normalization
+min     2    5000                  0.0
+max    65  162500                  1.0
+   State        Time     Group    Sales  Unit
+0    NSW   Afternoon      Kids  6187500  2475
+1    NSW   Afternoon       Men  6512500  2605
+2    NSW   Afternoon   Seniors  5985000  2394
+3    NSW   Afternoon     Women  6425000  2570
+4    NSW     Evening      Kids  6132500  2453
+..   ...         ...       ...      ...   ...
+79    WA     Evening     Women  1810000   724
+80    WA     Morning      Kids  1842500   737
+81    WA     Morning       Men  2007500   803
+82    WA     Morning   Seniors  1950000   780
+83    WA     Morning     Women  1767500   707
+
+[84 rows x 5 columns]
+Grouping the data by State and Time Group to analyze total sales and units sold
+   State        Time     Group    Sales  Unit
+70   VIC     Morning   Seniors  9057500  3623
+68   VIC     Morning      Kids  8950000  3580
+67   VIC     Evening     Women  8930000  3572
+65   VIC     Evening       Men  8900000  3560
+62   VIC   Afternoon   Seniors  8830000  3532
+..   ...         ...       ...      ...   ...
+78    WA     Evening   Seniors  1792500   717
+74    WA   Afternoon   Seniors  1770000   708
+83    WA     Morning     Women  1767500   707
+22    NT     Morning   Seniors  1760000   704
+75    WA   Afternoon     Women  1685000   674
+
+[84 rows x 5 columns]
+Applying standard deviation to the Sales column and creating a new column
+           Date        Time State  ...  Sales  sales_normalization  Sales_Std_Dev
+0    2020-10-01     Morning    WA  ...  20000             0.095238    9421.807477
+1    2020-10-01     Morning    WA  ...  20000             0.095238    9421.807477
+2    2020-10-01     Morning    WA  ...  10000             0.031746    9421.807477
+3    2020-10-01     Morning    WA  ...  37500             0.206349    9421.807477
+4    2020-10-01   Afternoon    WA  ...   7500             0.015873    9394.976396
+...         ...         ...   ...  ...    ...                  ...            ...
+7555 2020-12-30   Afternoon   TAS  ...  35000             0.190476    8901.955732
+7556 2020-12-30     Evening   TAS  ...  37500             0.206349    8802.606375
+7557 2020-12-30     Evening   TAS  ...  37500             0.206349    8802.606375
+7558 2020-12-30     Evening   TAS  ...  27500             0.142857    8802.606375
+7559 2020-12-30     Evening   TAS  ...  32500             0.174603    8802.606375
+
+[7560 rows x 8 columns]
+              Unit          Sales
+count  7560.000000    7560.000000
+mean     18.005423   45013.558201
+std      12.901403   32253.506944
+min       2.000000    5000.000000
+25%       8.000000   20000.000000
+50%      14.000000   35000.000000
+75%      26.000000   65000.000000
+max      65.000000  162500.000000
+Mode of Data
+   Unit  Sales
+0     9  22500
+Maximum Sales in State= VIC
+Minimum Sales in State= WA
+Maximum Sales by Group= Men
+Minimum Sales by Group= Seniors
+Maximum Sales using normalization in State= VIC
+Minimum Sales using normalization in State= WA
+Maximum Sales using normalization by Group= Men
+Minimum Sales using normalization by Group= Seniors
+Monthly Sales=Date
+10    114290000
+11     90682500
+12    135330000
+Name: Sales, dtype: int64
+Weekly Sales=Date
+0    48050000
+1    50327500
+2    49945000
+3    49405000
+4    48000000
+5    46245000
+6    48330000
+Name: Sales, dtype: int64
+Quarterly Sales=Date
+4    340302500
+Name: Sales, dtype: int64
+Monthly sales_normalization=Date
+10    645.650794
+11    495.761905
+12    779.238095
+Name: sales_normalization, dtype: float64
+Weekly sales_normalization=Date
+0    270.412698
+1    284.873016
+2    282.444444
+3    279.015873
+4    270.095238
+5    261.619048
+6    272.190476
+Name: sales_normalization, dtype: float64
+Quarterly sales_normalization=Date
+4    1920.650794
+Name: sales_normalization, dtype: float64
+```
+## Visualizations
+
+### State-wise sales analysis
+![State-wise sales analysis.png](visualization/images/State-wise sales analysis.png)
+
+### Group-wise sales analysis
+![Group-wise sales analysis.png](visualization/images/Group-wise sales analysis.png)
+
+### Time-of-the-day analysis
+![Time-of-the-day analysis.png](visualization/images/Time-of-the-day analysis.png)

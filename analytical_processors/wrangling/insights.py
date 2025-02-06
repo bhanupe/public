@@ -29,6 +29,3 @@ def group_by_features(data):
     print('Mode of Data')
     print(data.select_dtypes(include = 'int').mode())
     return data
-
-
-
