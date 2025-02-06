@@ -21,11 +21,11 @@ python install -r requirements.txt
 ```
 import pandas as pd
 
-from analytical_processors.analysis.data_analysis import sales, sales_normalization, sales_by_time
-from analytical_processors.visualization.visualize import bar_plot, line_plot
-from analytical_processors.wrangling.insights import explain, group_by_features
-from analytical_processors.wrangling.normalization import min_max_normalization
-from analytical_processors.wrangling.prepare import fill_null, convert_data_type
+from analysis.data_analysis import sales, sales_normalization, sales_by_time
+from visualization.visualize import bar_plot, line_plot
+from wrangling.insights import explain, group_by_features
+from wrangling.normalization import min_max_normalization
+from wrangling.prepare import fill_null, convert_data_type
 
 # Main Execution
 if __name__ == "__main__":
@@ -188,7 +188,11 @@ def line_plot(grouped_data):
     plt.show()
 ```
 
-# Output
+# Run
+```
+python ./main.py
+```
+## Output
 ```commandline
 Shape : 	(7560, 6)
 Row Labels : 	RangeIndex(start=0, stop=7560, step=1)
