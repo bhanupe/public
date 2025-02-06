@@ -352,10 +352,10 @@ Name: sales_normalization, dtype: float64
 ## Visualizations
 
 ### State-wise sales analysis
-![State-wise sales analysis.png](visualization/images/State-wise sales analysis.png)
+[State-wise sales analysis.png](visualization/images/StateWiseSalesAnalysis.png)
 
 ### Group-wise sales analysis
-![Group-wise sales analysis.png](visualization/images/Group-wise sales analysis.png)
+[Group-wise sales analysis.png](visualization/images/GroupWiseSalesAnalysis.png)
 
 ### Time-of-the-day analysis
-![Time-of-the-day analysis.png](visualization/images/Time-of-the-day analysis.png)
+[Time-of-the-day analysis.png](visualization/images/TimeOfTheDayAnalysis.png)
