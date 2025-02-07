@@ -36,15 +36,15 @@ if __name__ == "__main__":
         # fill_null(data,'Time','Morning')
         # fill_null(data, 'Sales', 20000)
         explain(data)
-        data = convert_data_type(data,data.Date,'datetime')
+        data = convert_data_type(data, data.Date, 'datetime')
         print('After converting datatime datatype')
         print(data.info())
-        min_max_normalization(data,'Sales','sales_normalization')
+        min_max_normalization(data, 'Sales', 'sales_normalization')
         print('after adding sales_normalization')
         print(data[['Unit', 'Sales', 'sales_normalization']].agg(['min', 'max']))
         group_by_features(data)
-        grouped_data_by_state = sales(data,'State')
-        print( f"Maximum Sales in State={grouped_data_by_state.idxmax()}")
+        grouped_data_by_state = sales(data, 'State')
+        print(f"Maximum Sales in State={grouped_data_by_state.idxmax()}")
         print(f"Minimum Sales in State={grouped_data_by_state.idxmin()}")
         grouped_data_by_group = sales(data, 'Group')
         print(f"Maximum Sales by Group={grouped_data_by_group.idxmax()}")
@@ -84,6 +84,7 @@ if __name__ == "__main__":
 ```
 import pandas as pd
 
+
 def explain(data):
     print(f'Shape : \t{data.shape}')
     print(f'Row Labels : \t{data.index}')
@@ -94,6 +95,7 @@ def explain(data):
     missing_val = data.isna().sum(axis=0)
     print('column which has null is')
     print(missing_val[missing_val == 1])
+
 
 def group_by_features(data):
     # %% d. Share your insights regarding the application of the GroupBy() function for
@@ -108,17 +110,21 @@ def group_by_features(data):
     print('Applying standard deviation to the Sales column and creating a new column')
     data["Sales_Std_Dev"] = data.groupby(["State", "Time"])["Sales"].transform("std")
     print(data)
-    print(data.select_dtypes(include = 'int' ).describe())
+    print(data.select_dtypes(include='int').describe())
     print('Mode of Data')
-    print(data.select_dtypes(include = 'int').mode())
+    print(data.select_dtypes(include='int').mode())
     return data
 ```
 ### wrangling/prepare.py
 ```
 import pandas as pd
-def fill_null(data,column,value):
-    return  data.fillna({column: value}, inplace = True)
-def convert_data_type(data,column,dest_type):
+
+
+def fill_null(data, column, value):
+    return data.fillna({column: value}, inplace=True)
+
+
+def convert_data_type(data, column, dest_type):
     if dest_type == 'datetime':
         data.Date = pd.to_datetime(column)
         return data
@@ -127,11 +133,12 @@ def convert_data_type(data,column,dest_type):
 ```
 from sklearn.preprocessing import MinMaxScaler
 
+
 # TBD C. Choose a suitable data wrangling technique—either data standardization
 # or normalization. Execute the preferred normalization method and
 # present the resulting data. (Normalization is the preferred approach for this
 # problem.)  Normalization (Min-Max Scaling)	When data needs to be in a fixed range (0 to 1)	Xnormalized=Xmax−XminX−Xmin
-def min_max_normalization(data,column_name,new_column_name_to_be_added):
+def min_max_normalization(data, column_name, new_column_name_to_be_added):
     scaler = MinMaxScaler()
     # Apply normalization to 'Sales' column
     data[new_column_name_to_be_added] = scaler.fit_transform(data[[column_name]])
@@ -144,15 +151,17 @@ def min_max_normalization(data,column_name,new_column_name_to_be_added):
 # Identify the group with the highest sales and the group with the lowest
 # sales based on the data provided.
 
-def sales(data,column):
+def sales(data, column):
     grouped_data = data.groupby(column)
     return grouped_data['Sales'].sum()
 
-def sales_normalization(data,column):
+
+def sales_normalization(data, column):
     grouped_data = data.groupby(column)
     return grouped_data['sales_normalization'].sum()
 
-def sales_by_time(data,duration):
+
+def sales_by_time(data, duration):
     if duration == 'month':
         return data['Date'].dt.month
     if duration == 'day_of_week':
@@ -167,12 +176,14 @@ import seaborn as sb
 
 import matplotlib.pyplot as plt
 
-def bar_plot(data,xcolumn,ycolumn,huecolumn,title):
+
+def bar_plot(data, xcolumn, ycolumn, huecolumn, title):
     plt.figure(figsize=(12, 8))
     sorted_data = data.sort_values([ycolumn], ascending=False)
     sb.barplot(x=xcolumn, y=ycolumn, hue=huecolumn, data=sorted_data)
     plt.title(title)
     plt.show()
+
 
 def line_plot(grouped_data):
     # Sorting time-of-day sales in descending order
@@ -194,8 +205,9 @@ python ./main.py
 ```
 ## Output
 ```
-Shape : 	(7560, 6)
-Row Labels : 	RangeIndex(start=0, stop=7560, step=1)
+$ python ./main.py                                                                   
+Shape :         (7560, 6)
+Row Labels :    RangeIndex(start=0, stop=7560, step=1)
 Column Names : 
 Index(['Date', 'Time', 'State', 'Group', 'Unit', 'Sales'], dtype='object')
 DataType : 
@@ -215,8 +227,8 @@ Sales    0
 dtype: int64
 column which has null is
 Series([], dtype: int64)
-Shape : 	(7560, 6)
-Row Labels : 	RangeIndex(start=0, stop=7560, step=1)
+Shape :         (7560, 6)
+Row Labels :    RangeIndex(start=0, stop=7560, step=1)
 Column Names : 
 Index(['Date', 'Time', 'State', 'Group', 'Unit', 'Sales'], dtype='object')
 DataType : 
@@ -271,18 +283,18 @@ Grouping the data by State and Time Group to analyze total sales and units sold
 
 [84 rows x 5 columns]
 Applying standard deviation to the Sales column and creating a new column
-           Date        Time State  ...  Sales  sales_normalization  Sales_Std_Dev
-0    2020-10-01     Morning    WA  ...  20000             0.095238    9421.807477
-1    2020-10-01     Morning    WA  ...  20000             0.095238    9421.807477
-2    2020-10-01     Morning    WA  ...  10000             0.031746    9421.807477
-3    2020-10-01     Morning    WA  ...  37500             0.206349    9421.807477
-4    2020-10-01   Afternoon    WA  ...   7500             0.015873    9394.976396
-...         ...         ...   ...  ...    ...                  ...            ...
-7555 2020-12-30   Afternoon   TAS  ...  35000             0.190476    8901.955732
-7556 2020-12-30     Evening   TAS  ...  37500             0.206349    8802.606375
-7557 2020-12-30     Evening   TAS  ...  37500             0.206349    8802.606375
-7558 2020-12-30     Evening   TAS  ...  27500             0.142857    8802.606375
-7559 2020-12-30     Evening   TAS  ...  32500             0.174603    8802.606375
+           Date        Time State     Group  Unit  Sales  sales_normalization  Sales_Std_Dev
+0    2020-10-01     Morning    WA      Kids     8  20000             0.095238    9421.807477
+1    2020-10-01     Morning    WA       Men     8  20000             0.095238    9421.807477
+2    2020-10-01     Morning    WA     Women     4  10000             0.031746    9421.807477
+3    2020-10-01     Morning    WA   Seniors    15  37500             0.206349    9421.807477
+4    2020-10-01   Afternoon    WA      Kids     3   7500             0.015873    9394.976396
+...         ...         ...   ...       ...   ...    ...                  ...            ...
+7555 2020-12-30   Afternoon   TAS   Seniors    14  35000             0.190476    8901.955732
+7556 2020-12-30     Evening   TAS      Kids    15  37500             0.206349    8802.606375
+7557 2020-12-30     Evening   TAS       Men    15  37500             0.206349    8802.606375
+7558 2020-12-30     Evening   TAS     Women    11  27500             0.142857    8802.606375
+7559 2020-12-30     Evening   TAS   Seniors    13  32500             0.174603    8802.606375
 
 [7560 rows x 8 columns]
               Unit          Sales
@@ -339,14 +351,16 @@ Name: sales_normalization, dtype: float64
 Quarterly sales_normalization=Date
 4    1920.650794
 Name: sales_normalization, dtype: float64
+2025-02-07 05:29:24.345 python[83668:2789266] +[IMKClient subclass]: chose IMKClient_Modern
+2025-02-07 05:29:24.346 python[83668:2789266] +[IMKInputSession subclass]: chose IMKInputSession_Modern
 ```
 ## Visualizations
 
 ### State-wise sales analysis
-![State-wise sales analysis.png](visualization/images/StateWiseSalesAnalysis.png)
+![State-wise sales analysis.png](visualization/images/StateWiseSalesAnalysis-final.png)
 
 ### Group-wise sales analysis
-![Group-wise sales analysis.png](visualization/images/GroupWiseSalesAnalysis.png)
+![Group-wise sales analysis.png](visualization/images/GroupWiseSalesAnalysis-final.png)
 
 ### Time-of-the-day analysis
-![Time-of-the-day analysis.png](visualization/images/TimeOfTheDayAnalysis.png)
+![Time-of-the-day analysis.png](visualization/images/TimeOfTheDayAnalysis-final.png)

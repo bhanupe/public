@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def explain(data):
     print(f'Shape : \t{data.shape}')
     print(f'Row Labels : \t{data.index}')
@@ -10,6 +11,7 @@ def explain(data):
     missing_val = data.isna().sum(axis=0)
     print('column which has null is')
     print(missing_val[missing_val == 1])
+
 
 def group_by_features(data):
     # %% d. Share your insights regarding the application of the GroupBy() function for
@@ -24,7 +26,7 @@ def group_by_features(data):
     print('Applying standard deviation to the Sales column and creating a new column')
     data["Sales_Std_Dev"] = data.groupby(["State", "Time"])["Sales"].transform("std")
     print(data)
-    print(data.select_dtypes(include = 'int' ).describe())
+    print(data.select_dtypes(include='int').describe())
     print('Mode of Data')
-    print(data.select_dtypes(include = 'int').mode())
+    print(data.select_dtypes(include='int').mode())
     return data

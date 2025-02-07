@@ -2,12 +2,14 @@ import seaborn as sb
 
 import matplotlib.pyplot as plt
 
-def bar_plot(data,xcolumn,ycolumn,huecolumn,title):
+
+def bar_plot(data, xcolumn, ycolumn, huecolumn, title):
     plt.figure(figsize=(12, 8))
     sorted_data = data.sort_values([ycolumn], ascending=False)
     sb.barplot(x=xcolumn, y=ycolumn, hue=huecolumn, data=sorted_data)
     plt.title(title)
     plt.show()
+
 
 def line_plot(grouped_data):
     # Sorting time-of-day sales in descending order
