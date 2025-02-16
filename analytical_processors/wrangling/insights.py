@@ -3,9 +3,12 @@ import pandas as pd
 
 def explain(data):
     print(f'Shape : \t{data.shape}')
-    print(f'Row Labels : \t{data.index}')
-    print(f'Column Names : \n{data.columns}')
-    print(f'DataType : \n{data.dtypes}')
+    print(f'Row labels : \t{data.index}')
+    print(f'Column names : \n{data.columns}')
+    print(f'Data type : \n{data.dtypes}')
+    pd.set_option('display.max_columns',None)
+    print(f'Data info : \n{data.info()}')
+    print(f'Describe data : \n{data.describe()}')
     # this returns if there is at least one null value in any of the column data
     print(data.isna().sum(axis=0))
     missing_val = data.isna().sum(axis=0)

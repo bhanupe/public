@@ -27,6 +27,6 @@ def line_plot(grouped_data):
 
 def heat_map(correlation_matrix):
     plt.figure(figsize=(20, 10))
-    sb.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2g', linewidths='2')
+    sb.heatmap(correlation_matrix, annot=True, cmap='BuGn', fmt='.2g', linewidths='2')
     plt.title('Correlation matrix')
     plt.show()

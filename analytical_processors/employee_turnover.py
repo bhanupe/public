@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 from visualization.visualize import heat_map
 from wrangling.insights import explain, group_by_features
@@ -8,6 +9,7 @@ if __name__ == "__main__":
     try:
         file_path = '../data/HR_comma_sep.csv'
         data = pd.read_csv(file_path)
+        ################### EDA ###################
         ########### Data Quality Checks ###########
         # Perform data quality checks by checking for missing values, if any.
         explain(data)
@@ -49,7 +51,17 @@ if __name__ == "__main__":
         data.drop(columns={'department', 'salary'}, inplace=True)
         explain(data)
 
-        heat_map(data.corr())
+        corr_mat = data.corr()
+
+        mask = np.ones_like(corr_mat)
+        mask[np.tril_indices_from(mask)] = 0
+
+        # in the correlation matrix, value
+        # 0 -> No correlation
+        # +ve -> The variables are proportional to each other
+        # -ve -> The variables are inversely proportional to each other
+        print(f'Describe Correlation : \n{corr_mat}')
+        heat_map(corr_mat)
         # Reasons behind employees leaving are influenced by
         # satisfaction_level -> salary -> work_accident -> department
         ########### Correlation Matrix ############
