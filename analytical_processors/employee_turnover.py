@@ -115,7 +115,7 @@ if __name__ == "__main__":
                    'Proportion of Employees', 'proportion')
 
         ######### Splitting Data ##########
-        X = data.drop(columns=['average_montly_hours'],axis = 1).values  # dataframe
+        X = data.drop(columns=['average_montly_hours'],axis = 1).values # dataframe
         y = data['average_montly_hours'].values  # always a series
         print(f"x= ",X)
         print(f"y= ",y)
