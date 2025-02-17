@@ -115,8 +115,10 @@ if __name__ == "__main__":
                    'Proportion of Employees', 'proportion')
 
         ######### Splitting Data ##########
-        X = data.drop(columns='left')  # dataframe
-        y = data.left  # always a series
+        X = data.drop(columns=['average_montly_hours'],axis = 1).values  # dataframe
+        y = data['average_montly_hours'].values  # always a series
+        print(f"x= ",X)
+        print(f"y= ",y)
 
         X_train, X_test, y_train, y_test = split(X, y, test_size=0.2, random_state=12) ## split train and test data by 80 and 20 percent
 
@@ -129,15 +131,21 @@ if __name__ == "__main__":
         mlr_mod = LinearRegression()
         mlr_mod.fit(X_train, y_train) ## fit and train the model
 
+        ####predict for first row
+        data.head(2);
+        y_pred = mlr_mod.predict([[0.38,0.53,2,3,0,1,0,1,1]])
+        print(f"y_pred for first row = ", y_pred ,"but actual value of y= 157" )
+
+        y_pred2 = mlr_mod.predict([[0.8,0.86,5,6,0,1,0,1,2]])
+        print(f"y_pred for second row = ", y_pred2,"but actual value of y= 262")
+
+
         ###### predict for Test and Train
         pred_train_mlr = mlr_mod.predict(X_train)
         pred_test_mlr = mlr_mod.predict(X_test)
 
         print(f"pred_train_mlr = ", pred_train_mlr)
         print(f"pred_test_mlr = ",pred_test_mlr)
-
-        print(f"pred_train_mlr 5 = ", pred_train_mlr[5:])
-        print(f"pred_test_mlr 5 = ", pred_test_mlr[5:])
 
         print(f"pred_train_mlr :5 = ", pred_train_mlr[:5])
         print(f"pred_test_mlr :5 = ", pred_test_mlr[:5])
