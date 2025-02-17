@@ -30,3 +30,12 @@ def heat_map(correlation_matrix):
     sb.heatmap(correlation_matrix, annot=True, cmap='BuGn', fmt='.2g', linewidths='2')
     plt.title('Correlation matrix')
     plt.show()
+
+def hist_plot(data):
+    plt.figure(figsize=(20, 10))
+    sb.histplot(data, kde=True, bins=7,color="teal")
+    plt.title('Distribution Plot')
+    plt.ylabel("Employee Count")
+    plt.show()
+
+
