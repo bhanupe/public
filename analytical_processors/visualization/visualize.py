@@ -39,3 +39,10 @@ def hist_plot(data):
     plt.show()
 
 
+def  count_plot(data,xcolumnValue, hueValue,title, xlabel,ylabel,statValue) :
+    sb.countplot(data, x=xcolumnValue, hue=hueValue,stat = statValue)
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.show()
+

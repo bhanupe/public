@@ -3,8 +3,10 @@ import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
 
-from visualization.visualize import heat_map, hist_plot, bar_plot
+from visualization.visualize import heat_map, hist_plot, bar_plot, count_plot
 from wrangling.insights import explain, group_by_features
+from sklearn.model_selection import train_test_split as split
+from sklearn.linear_model import LinearRegression
 
 # Main Execution
 if __name__ == "__main__":
@@ -100,9 +102,45 @@ if __name__ == "__main__":
         plt.tight_layout()
         plt.show()
 
-        ########## Bar plot ##############
-        # bar_plot(data, 'number_project', 'left', 'analysis')
+        ########## 2.3 Bar plot ##############
+        # 2.3. Draw the bar plot of the employee project count of both employees
+        # who left and stayed in the organization (use column number_project
+        # and hue column left), and give your inferences from the plot.
+        ########## Inference from countPlot is Employees with low number of projects which is 2 and Employees with high number of projects(7) left the company #################
+        count_plot(data, 'number_project', 'left', 'Employee Project Count by Left/Stayed Status', 'Number of Projects',
+                   'Count of Employees', "count")
+        count_plot(data,'number_project','left','Employee Project Percent by Left/Stayed Status','Number of Projects',
+                   'Percentage of Employees','percent')
+        count_plot(data, 'number_project', 'left', 'Employee Project Proportion by Left/Stayed Status', 'Number of Projects',
+                   'Proportion of Employees', 'proportion')
 
+        ######### Splitting Data ##########
+        X = data.drop(columns='left')  # dataframe
+        y = data.left  # always a series
+
+        X_train, X_test, y_train, y_test = split(X, y, test_size=0.2, random_state=12) ## split train and test data by 80 and 20 percent
+
+        print(f"X_train no. of rows = ", X_train.shape[0])
+        print(f"y_train no. of rows = ", y_train.size)
+
+        print(f"X_test no. of rows  = ", X_test.shape[0])
+        print(f"y_test no. of rows  = ", y_test.size)
+
+        mlr_mod = LinearRegression()
+        mlr_mod.fit(X_train, y_train) ## fit and train the model
+
+        ###### predict for Test and Train
+        pred_train_mlr = mlr_mod.predict(X_train)
+        pred_test_mlr = mlr_mod.predict(X_test)
+
+        print(f"pred_train_mlr = ", pred_train_mlr)
+        print(f"pred_test_mlr = ",pred_test_mlr)
+
+        print(f"pred_train_mlr 5 = ", pred_train_mlr[5:])
+        print(f"pred_test_mlr 5 = ", pred_test_mlr[5:])
+
+        print(f"pred_train_mlr :5 = ", pred_train_mlr[:5])
+        print(f"pred_test_mlr :5 = ", pred_test_mlr[:5])
 
     except Exception as e:
         print(f"❌ Fatal error: {e}")
