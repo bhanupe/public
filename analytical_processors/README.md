@@ -359,13 +359,13 @@ Name: sales_normalization, dtype: float64
 ### Visualizations
 
 #### State-wise sales analysis
-![State-wise sales analysis.png](visualization/images/StateWiseSalesAnalysis-final.png)
+![State-wise sales analysis.png](visualization/images/sales_analysis/StateWiseSalesAnalysis-final.png)
 
 #### Group-wise sales analysis
-![Group-wise sales analysis.png](visualization/images/GroupWiseSalesAnalysis-final.png)
+![Group-wise sales analysis.png](visualization/images/sales_analysis/GroupWiseSalesAnalysis-final.png)
 
 #### Time-of-the-day analysis
-![Time-of-the-day analysis.png](visualization/images/TimeOfTheDayAnalysis-final.png)
+![Time-of-the-day analysis.png](visualization/images/sales_analysis/TimeOfTheDayAnalysis-final.png)
 
 # Employee Turnover
 
@@ -514,4 +514,18 @@ Series([], dtype: int64)
 ### Visualizations
 
 #### Correlation Matrix
-![correlation_matrix.png](visualization/images/correlation_matrix.png)
+![correlation_matrix.png](visualization/images/employee_turnover/correlation_matrix_2.1.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/satisfaction_level_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/last_evaluation_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/average_monthly_hours_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/all_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/number_projects_2.3.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/number_projects_percentage_2.3.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/number_projects_proportion_2.3.png)

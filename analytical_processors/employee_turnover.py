@@ -62,10 +62,10 @@ if __name__ == "__main__":
 
         # in the correlation matrix, value
         # The correlation values range from -1 to 1:
-        # a value of 1 means perfect positive correlation,
-        # -1 means perfect negative correlation,
-        # and 0 means no correlation.
-        # Based on a predefined threshold (for example, 0.9), you can identify pairs of columns that are highly correlated and drop them.
+            # 1 means perfect positive correlation,
+            # -1 means perfect negative correlation,
+            # 0 means no correlation.
+            # Based on a predefined threshold (for example, 0.9), you can identify pairs of columns that are highly correlated and drop them.
         print(f'Describe Correlation : \n{corr_mat}')
         heat_map(corr_mat)
         # Reasons behind employees leaving are influenced by
@@ -74,23 +74,23 @@ if __name__ == "__main__":
 
         ########## Distribution plot ##############
         #Outcome of the Distributions:
-# Employee Satisfaction (satisfaction_level)
-# The distribution is bimodal, with peaks at low (around 0.1) and high (around 0.7-0.8) satisfaction levels.
-# This suggests that employees tend to be either very satisfied or very dissatisfied.
-
-# Employee Evaluation (last_evaluation)
-# The distribution shows peaks around 0.5 and 0.85-1.0.
-# This suggests two groups: moderate performers and highly evaluated employees.
-
-# Employee Average Monthly Hours (average_monthly_hours)
-# The distribution is right-skewed, with peaks around 150-200 and 250+ hours.
-# This suggests two work-hour groups: regular workers and overworked employees.
-
+        # Employee Satisfaction (satisfaction_level)
+            # The distribution is bimodal, with peaks at low (around 0.1) and high (around 0.7-0.8) satisfaction levels.
+            # This suggests that employees tend to be either very satisfied or very dissatisfied.
         hist_plot(data['satisfaction_level'])
-        hist_plot(data['last_evaluation'])
-        hist_plot(data['average_montly_hours'])
 
-# Filter the data for employees who left
+        # Employee Evaluation (last_evaluation)
+            # The distribution shows peaks around 0.5 and 0.85-1.0.
+            # This suggests two groups: moderate performers and highly evaluated employees.
+        hist_plot(data['last_evaluation'])
+
+        # Employee Average Monthly Hours (average_monthly_hours)
+            # The distribution is right-skewed, with peaks around 150-200 and 250+ hours.
+            # This suggests two work-hour groups: regular workers and overworked employees.
+        hist_plot(data['average_montly_hours'])
+        ########## Distribution plot ##############
+
+        # Filter the data for employees who left
         df_left = data[data["left"] == 1]
         columns_to_plot = ["satisfaction_level", "last_evaluation", "average_montly_hours"]
         # Plot the distribution for employees who left
