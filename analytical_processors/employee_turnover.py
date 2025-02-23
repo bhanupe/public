@@ -7,6 +7,7 @@ from visualization.visualize import heat_map, hist_plot, bar_plot, count_plot
 from wrangling.insights import explain, group_by_features
 from sklearn.model_selection import train_test_split as split
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
 
 # Main Execution
 if __name__ == "__main__":
@@ -52,7 +53,7 @@ if __name__ == "__main__":
         explain(data)
 
         # Remove all object type data values
-        data.drop(columns={'department', 'salary'}, inplace=True)
+        data.drop(columns=['department', 'salary'], inplace=True)
         explain(data)
 
         corr_mat = data.corr()
@@ -115,10 +116,10 @@ if __name__ == "__main__":
                    'Proportion of Employees', 'proportion')
 
         ######### Splitting Data ##########
-        X = data.drop(columns=['average_montly_hours'],axis = 1).values # dataframe
-        y = data['average_montly_hours'].values  # always a series
-        print(f"x= ",X)
-        print(f"y= ",y)
+        X = data.drop(columns='average_montly_hours')
+        y = data.average_montly_hours  # always a series
+        print(f"x= ",X.shape)
+        print(f"y= ",y.shape)
 
         X_train, X_test, y_train, y_test = split(X, y, test_size=0.2, random_state=12) ## split train and test data by 80 and 20 percent
 
@@ -149,6 +150,26 @@ if __name__ == "__main__":
 
         print(f"pred_train_mlr :5 = ", pred_train_mlr[:5])
         print(f"pred_test_mlr :5 = ", pred_test_mlr[:5])
+
+        ### Evaluate the model:
+        r2Score = r2_score(y_test,pred_test_mlr)
+        print(f"r2Score = ", r2Score)
+
+        ### Plot the predictions
+        plt.figure(figsize=(20,15))
+        plt.scatter(y_test,pred_test_mlr)
+        plt.xlabel('Actual')
+        plt.ylabel('Predicted')
+        plt.title('ACTUAL vs. Predicted')
+        plt.show()
+
+        ### print predicted values
+        pred_df = pd.DataFrame({'Actual value' : y_test, 'Predicted value' : pred_test_mlr, 'Difference' : y_test - pred_test_mlr})
+        print(f"Predicted values Data frame:")
+        print(pred_df[0:20])
+
+
+
 
     except Exception as e:
         print(f"❌ Fatal error: {e}")
