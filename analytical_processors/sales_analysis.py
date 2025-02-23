@@ -1,6 +1,6 @@
 import pandas as pd
 
-from analysis.data_analysis import sales, sales_normalization, sales_by_time
+from analysis.data_analysis import group_data, group_data_by_time
 from visualization.visualize import bar_plot, line_plot
 from wrangling.insights import explain, group_by_features
 from wrangling.normalization import min_max_normalization
@@ -22,32 +22,32 @@ if __name__ == "__main__":
         print('after adding sales_normalization')
         print(data[['Unit', 'Sales', 'sales_normalization']].agg(['min', 'max']))
         group_by_features(data)
-        grouped_data_by_state = sales(data, 'State')
+        grouped_data_by_state = group_data(data, 'State', 'Sales')
         print(f"Maximum Sales in State={grouped_data_by_state.idxmax()}")
         print(f"Minimum Sales in State={grouped_data_by_state.idxmin()}")
-        grouped_data_by_group = sales(data, 'Group')
+        grouped_data_by_group = group_data(data, 'Group', 'Sales')
         print(f"Maximum Sales by Group={grouped_data_by_group.idxmax()}")
         print(f"Minimum Sales by Group={grouped_data_by_group.idxmin()}")
 
-        grouped_data_by_state_normalization = sales_normalization(data, 'State')
+        grouped_data_by_state_normalization = group_data(data, 'State', 'sales_normalization')
         print(f"Maximum Sales using normalization in State={grouped_data_by_state_normalization.idxmax()}")
         print(f"Minimum Sales using normalization in State={grouped_data_by_state_normalization.idxmin()}")
-        grouped_data_by_group_normalization = sales_normalization(data, 'Group')
+        grouped_data_by_group_normalization = group_data(data, 'Group', 'sales_normalization')
         print(f"Maximum Sales using normalization by Group={grouped_data_by_group_normalization.idxmax()}")
         print(f"Minimum Sales using normalization by Group={grouped_data_by_group_normalization.idxmin()}")
 
-        monthly_report = sales_by_time(data, 'month')
+        monthly_report = group_data_by_time(data, 'month')
         print(f"Monthly Sales={data.groupby(monthly_report)['Sales'].sum()}")
-        weekly_report = sales_by_time(data, 'day_of_week')
+        weekly_report = group_data_by_time(data, 'day_of_week')
         print(f"Weekly Sales={data.groupby(weekly_report)['Sales'].sum()}")
-        quarterly_report = sales_by_time(data, 'quarter')
+        quarterly_report = group_data_by_time(data, 'quarter')
         print(f"Quarterly Sales={data.groupby(quarterly_report)['Sales'].sum()}")
 
-        monthly_report_sales_normalization = sales_by_time(data, 'month')
+        monthly_report_sales_normalization = group_data_by_time(data, 'month')
         print(f"Monthly sales_normalization={data.groupby(monthly_report)['sales_normalization'].sum()}")
-        weekly_report_sales_normalization = sales_by_time(data, 'day_of_week')
+        weekly_report_sales_normalization = group_data_by_time(data, 'day_of_week')
         print(f"Weekly sales_normalization={data.groupby(weekly_report)['sales_normalization'].sum()}")
-        quarterly_report_sales_normalization = sales_by_time(data, 'quarter')
+        quarterly_report_sales_normalization = group_data_by_time(data, 'quarter')
         print(f"Quarterly sales_normalization={data.groupby(quarterly_report)['sales_normalization'].sum()}")
 
         bar_plot(data, 'State', 'Sales', 'Group', 'State-wise sales analysis')
