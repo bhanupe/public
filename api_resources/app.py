@@ -1,78 +1,85 @@
-import logging
+from flask import Flask, request, jsonify
 import random
 import string
-from flask import Flask, request, jsonify
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import logging
+import re
 
 app = Flask(__name__)
 
-# Utility Functions
-def add(a, b):
-    return a + b
+# Logger setup
+def setup_logger(log_file="api_logs.log"):
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
+    return logging.getLogger()
 
-def generate_random_number(start=1, end=100):
-    """Generates a random number within a given range."""
-    return random.randint(start, end)
+logger = setup_logger()
 
-def generate_random_string(length=8):
-    """Generates a random string of given length."""
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+@app.route('/generate-number', methods=['GET'])
+def generate_random_number():
+    start = int(request.args.get('start', 1))
+    end = int(request.args.get('end', 100))
+    random_number = random.randint(start, end)
+    logger.info(f'Generated random number: {random_number}')
+    return jsonify({"random_number": random_number})
 
-def validate_numbers(a, b):
-    """Validates if inputs are numbers and converts them."""
-    try:
-        return float(a), float(b)
-    except ValueError:
-        return None, None
+@app.route('/generate-string', methods=['GET'])
+def generate_random_string():
+    length = int(request.args.get('length', 10))
+    characters = string.ascii_letters + string.digits
+    random_string = ''.join(random.choices(characters, k=length))
+    logger.info(f'Generated random string: {random_string}')
+    return jsonify({"random_string": random_string})
 
-# Routes
-@app.route('/')
-def home():
-    return 'Hello, Sweety!'
+@app.route('/format-string', methods=['GET'])
+def format_string():
+    text = request.args.get('text', '')
+    format_type = request.args.get('format', 'snake_case')
+    formatted_text = ''
 
-@app.route('/add', methods=['POST'])
-def add_two_numbers():
-    try:
-        if request.is_json:
-            data = request.get_json()
-            a, b = data.get('a'), data.get('b')
-        elif request.form:
-            a, b = request.form.get('a'), request.form.get('b')
-        else:
-            return jsonify({"error": "Unsupported media type"}), 400
+    if format_type == "snake_case":
+        formatted_text = text.lower().replace(" ", "_")
+    elif format_type == "camelCase":
+        words = re.split(r'\s+', text.strip())
+        formatted_text = words[0].lower() + ''.join(word.capitalize() for word in words[1:])
+    else:
+        return jsonify({"error": "Invalid format type"}), 400
 
-        if a is None or b is None:
-            return jsonify({"error": "Both 'a' and 'b' are required"}), 400
+    return jsonify({"formatted_text": formatted_text})
 
-        a, b = validate_numbers(a, b)
-        if a is None or b is None:
-            return jsonify({"error": "'a' and 'b' must be numbers"}), 400
+@app.route('/log-message', methods=['POST'])
+def log_message():
+    log_level = request.json.get('level', 'info').lower()
+    message = request.json.get('message', 'No message provided')
+    
+    if log_level == "info":
+        logger.info(message)
+    elif log_level == "error":
+        logger.error(message)
+    elif log_level == "debug":
+        logger.debug(message)
+    else:
+        return jsonify({"error": "Invalid log level"}), 400
 
-        result = add(a, b)
-        logger.info(f"Addition requested: {a} + {b} = {result}")
+    return jsonify({"status": "Logged", "log_level": log_level, "message": message})
 
-        return jsonify({
-            "message": f"The sum of {a} and {b} is {result}",
-            "result": result
-        }), 200
-    except Exception as e:
-        logger.error(f"Error in /add route: {e}")
-        return jsonify({"error": str(e)}), 500
+@app.route('/generate-strings', methods=['PUT'])
+def generate_strings():
+    data = request.json
+    num_strings = data.get('num_strings', 5)
+    length = data.get('length', 10)
+    strings = []
+    total_length = 0
 
-@app.route('/random-number')
-def random_number():
-    """Generates a random number and returns it."""
-    number = generate_random_number()
-    return jsonify({"random_number": number})
+    for _ in range(num_strings):
+        random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+        strings.append(random_string)
+        total_length += len(random_string)
+        logger.info(f'Generated random string: {random_string}')
 
-@app.route('/random-string')
-def random_string():
-    """Generates a random string and returns it."""
-    rand_str = generate_random_string()
-    return jsonify({"random_string": rand_str})
+    return jsonify({"strings": strings, "total_length": total_length})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
