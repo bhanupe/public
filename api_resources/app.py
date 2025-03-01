@@ -32,7 +32,10 @@ def generate_random_string():
     random_string = ''.join(random.choices(characters, k=length))
     logger.info(f'Generated random string: {random_string}')
     return jsonify({"random_string": random_string})
-
+#yojana@Mac public %  curl 'http://localhost:5001/format-string?text=hello%20world&format=camelCase'
+#{
+#  "formatted_text": "helloWorld"
+#}
 @app.route('/format-string', methods=['GET'])
 def format_string():
     text = request.args.get('text', '')
