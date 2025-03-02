@@ -14,7 +14,7 @@ scikit-learn==1.6.1
 please install the requirements 
 ```
 python -m pip install --upgrade pip
-python install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 # Sales Assignment

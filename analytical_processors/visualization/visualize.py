@@ -8,7 +8,7 @@ def bar_plot(data, xcolumn, ycolumn, huecolumn, title):
     sorted_data = data.sort_values([ycolumn], ascending=False)
     sb.barplot(x=xcolumn, y=ycolumn, hue=huecolumn, data=sorted_data)
     plt.title(title)
-    plt.show()
+    #plt.show()
 
 
 def line_plot(grouped_data):
@@ -22,21 +22,21 @@ def line_plot(grouped_data):
     plt.ylabel('Total Sales')
     plt.xticks(rotation=45)
     plt.grid(True)
-    plt.show()
+    #plt.show()
 
 
 def heat_map(correlation_matrix):
     plt.figure(figsize=(20, 10))
     sb.heatmap(correlation_matrix, annot=True, cmap='BuGn', fmt='.2g', linewidths='2')
     plt.title('Correlation matrix')
-    plt.show()
+    #plt.show()
 
 def hist_plot(data):
     plt.figure(figsize=(20, 10))
     sb.histplot(data, kde=True, bins=7,color="teal")
     plt.title('Distribution Plot')
     plt.ylabel("Employee Count")
-    plt.show()
+    #plt.show()
 
 
 def  count_plot(data,xcolumnValue, hueValue,title, xlabel,ylabel,statValue) :
@@ -44,5 +44,5 @@ def  count_plot(data,xcolumnValue, hueValue,title, xlabel,ylabel,statValue) :
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.show()
+    #plt.show()
 

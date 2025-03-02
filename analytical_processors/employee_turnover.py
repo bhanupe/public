@@ -2,12 +2,15 @@ import pandas as pd
 import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
+import copy
+from sklearn.preprocessing import StandardScaler
 
 from visualization.visualize import heat_map, hist_plot, bar_plot, count_plot
 from wrangling.insights import explain, group_by_features
 from sklearn.model_selection import train_test_split as split
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import r2_score
+from sklearn.cluster import KMeans
 
 # Main Execution
 if __name__ == "__main__":
@@ -27,37 +30,18 @@ if __name__ == "__main__":
         ########### Correlation Matrix ############
         # Draw a heatmap of the correlation matrix between all numerical features or columns in the data.
         # Numerical mapping for salary levels
-        salary_mapping = {
-            "low": 1,
-            "medium": 2,
-            "high": 3
-        }
 
-        # Numerical mapping for departments
-        department_mapping = {
-            "sales": 1,
-            "accounting": 2,
-            "hr": 3,
-            "technical": 4,
-            "support": 5,
-            "management": 6,
-            "IT": 7,
-            "product_mng": 8,
-            "marketing": 9,
-            "RandD": 10
-        }
-
-        # Apply salary mapping
-        data['salary_encoded'] = data["salary"].map(salary_mapping)
-        # Apply department mapping
-        data['department_encoded'] = data["department"].map(department_mapping)
         explain(data)
+        encoded_data = pd.get_dummies(data, dtype=int)
+        print(encoded_data.head(3))
+        encoded_data.to_csv('encoded_data.csv', index=False)
+        target_cols = encoded_data['left']
+        print(target_cols)
 
-        # Remove all object type data values
-        data.drop(columns=['department', 'salary'], inplace=True)
-        explain(data)
 
-        corr_mat = data.corr()
+
+
+        corr_mat = encoded_data.corr()
 
         mask = np.ones_like(corr_mat)
         mask[np.tril_indices_from(mask)] = 0
@@ -79,17 +63,17 @@ if __name__ == "__main__":
         # Employee Satisfaction (satisfaction_level)
             # The distribution is bimodal, with peaks at low (around 0.1) and high (around 0.7-0.8) satisfaction levels.
             # This suggests that employees tend to be either very satisfied or very dissatisfied.
-        hist_plot(data['satisfaction_level'])
+        hist_plot(encoded_data['satisfaction_level'])
 
         # Employee Evaluation (last_evaluation)
             # The distribution shows peaks around 0.5 and 0.85-1.0.
             # This suggests two groups: moderate performers and highly evaluated employees.
-        hist_plot(data['last_evaluation'])
+        hist_plot(encoded_data['last_evaluation'])
 
         # Employee Average Monthly Hours (average_monthly_hours)
             # The distribution is right-skewed, with peaks around 150-200 and 250+ hours.
             # This suggests two work-hour groups: regular workers and overworked employees.
-        hist_plot(data['average_montly_hours'])
+        hist_plot(encoded_data['average_montly_hours'])
         ########## Distribution plot ##############
 
         # Filter the data for employees who left
@@ -102,23 +86,52 @@ if __name__ == "__main__":
             sb.histplot(df_left[col], kde=True, bins=30, color="red")
             plt.title(f"Distribution of {col} (Employees who left)")
         plt.tight_layout()
-        plt.show()
+        #plt.show()
+
 
         ########## 2.3 Bar plot ##############
         # 2.3. Draw the bar plot of the employee project count of both employees
         # who left and stayed in the organization (use column number_project
         # and hue column left), and give your inferences from the plot.
         ########## Inference from countPlot is Employees with low number of projects which is 2 and Employees with high number of projects(7) left the company #################
-        count_plot(data, 'number_project', 'left', 'Employee Project Count by Left/Stayed Status', 'Number of Projects',
+        count_plot(encoded_data, 'number_project', 'left', 'Employee Project Count by Left/Stayed Status', 'Number of Projects',
                    'Count of Employees', "count")
-        count_plot(data,'number_project','left','Employee Project Percent by Left/Stayed Status','Number of Projects',
+        count_plot(encoded_data,'number_project','left','Employee Project Percent by Left/Stayed Status','Number of Projects',
                    'Percentage of Employees','percent')
-        count_plot(data, 'number_project', 'left', 'Employee Project Proportion by Left/Stayed Status', 'Number of Projects',
+        count_plot(encoded_data, 'number_project', 'left', 'Employee Project Proportion by Left/Stayed Status', 'Number of Projects',
                    'Proportion of Employees', 'proportion')
 
+
+        ## K-Means Clustering Steps
+        ## 3.1
+        ##testdata = encoded_data.columns['satisfaction_level','last_evaluation','left']
+        testdata = encoded_data.iloc[:, [0, 1, 6]]
+
+
+        sc = StandardScaler()
+        scaled = sc.fit_transform(testdata)
+        ## 3.2
+        kmm = KMeans(n_clusters=3, random_state=12)
+        kmm.fit(scaled)
+        cluster_labels = kmm.predict(scaled)
+
+        ## Cluster profiling
+        cluster_data = copy.deepcopy(testdata)
+        cluster_data['clus_label'] = cluster_labels
+        print('----')
+        print(cluster_data.head(3))
+
+        f, ax = plt.subplots(1, 1, figsize=(20, 5))
+        sb.scatterplot(x='left', y='satisfaction_level', hue=cluster_data.clus_label, palette='rainbow_r', ax=ax[0])
+        ax[0].set_xlabel('Last Evaluation', size=12, weight='bold')
+        ax[0].set_ylabel('Satisfaction Level', size=12, weight='bold')
+        ax[0].set_title('KMeans Clustering', size=22, weight='bold')
+        plt.show()
+
+
         ######### Splitting Data ##########
-        X = data.drop(columns='average_montly_hours')
-        y = data.average_montly_hours  # always a series
+        X = encoded_data.drop(columns='average_montly_hours')
+        y = encoded_data.average_montly_hours  # always a series
         print(f"x= ",X.shape)
         print(f"y= ",y.shape)
 
@@ -135,10 +148,10 @@ if __name__ == "__main__":
 
         ####predict for first row
         data.head(2);
-        y_pred = mlr_mod.predict([[0.38,0.53,2,3,0,1,0,1,1]])
+        y_pred = mlr_mod.predict([[0.38,0.53,2,157,3,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1]])
         print(f"y_pred for first row = ", y_pred ,"but actual value of y= 157" )
 
-        y_pred2 = mlr_mod.predict([[0.8,0.86,5,6,0,1,0,1,2]])
+        y_pred2 = mlr_mod.predict([[0.8,0.86,5,262,6,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0]])
         print(f"y_pred for second row = ", y_pred2,"but actual value of y= 262")
 
 
@@ -173,4 +186,4 @@ if __name__ == "__main__":
 
 
     except Exception as e:
-        print(f"❌ Fatal error: {e}")
+        print(f"❌ Fatal error: {e.__traceback__.tb_lineno}")
