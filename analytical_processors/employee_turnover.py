@@ -38,11 +38,9 @@ if __name__ == "__main__":
         target_cols = encoded_data['left']
         print(target_cols)
 
-
-
-
+        ########### Correlation Matrix ############
+        ## 2.1 Draw a heatmap of the correlation matrix between all numerical features or columns in the data.
         corr_mat = encoded_data.corr()
-
         mask = np.ones_like(corr_mat)
         mask[np.tril_indices_from(mask)] = 0
 
@@ -54,9 +52,10 @@ if __name__ == "__main__":
             # Based on a predefined threshold (for example, 0.9), you can identify pairs of columns that are highly correlated and drop them.
         print(f'Describe Correlation : \n{corr_mat}')
         heat_map(corr_mat)
+
         # Reasons behind employees leaving are influenced by
         # satisfaction_level -> salary -> work_accident -> department
-        ########### Correlation Matrix ############
+
 
         ########## Distribution plot ##############
         #Outcome of the Distributions:
@@ -103,84 +102,109 @@ if __name__ == "__main__":
 
 
         ## K-Means Clustering Steps
-        ## 3.1
-        ##testdata = encoded_data.columns['satisfaction_level','last_evaluation','left']
-        testdata = encoded_data.iloc[:, [0, 1, 6]]
+        ## 3.1 Choose columns satisfaction_level, last_evaluation, and left.
+        test_data = encoded_data[encoded_data['left'] == 1][['satisfaction_level', 'last_evaluation']]
+        test_data.head(2)
 
-
+        ## Standardization using StandardScaler before K-Means Clustering
         sc = StandardScaler()
-        scaled = sc.fit_transform(testdata)
-        ## 3.2
+        scaled = sc.fit_transform(test_data)
+
+        ## 3.2 Do K-means clustering of employees who left the company into 3 clusters?
         kmm = KMeans(n_clusters=3, random_state=12)
         kmm.fit(scaled)
         cluster_labels = kmm.predict(scaled)
 
-        ## Cluster profiling
-        cluster_data = copy.deepcopy(testdata)
+        ## K-Means Cluster profiling
+        cluster_data = copy.deepcopy(test_data)
         cluster_data['clus_label'] = cluster_labels
         print('----')
         print(cluster_data.head(3))
 
-        f, ax = plt.subplots(1, 1, figsize=(20, 5))
-        sb.scatterplot(x='left', y='satisfaction_level', hue=cluster_data.clus_label, palette='rainbow_r', ax=ax[0])
-        ax[0].set_xlabel('Last Evaluation', size=12, weight='bold')
-        ax[0].set_ylabel('Satisfaction Level', size=12, weight='bold')
-        ax[0].set_title('KMeans Clustering', size=22, weight='bold')
+        ## Visualize Scatter Plot after K-Means clustering.
+        f = plt.subplots(1, 1, figsize=(15, 6))
+        sb.scatterplot(x=cluster_data.satisfaction_level, y=cluster_data.last_evaluation, hue=cluster_data.clus_label,
+                      palette='rainbow_r')
+        plt.show()
+
+        ## 3.3 Inference from Clusters
+        ###### Cluster 0 (Low Satisfaction, High Evaluation) employees are at the highest risk—even if they perform well, they leave due to dissatisfaction.
+        ###### Cluster 1 (High Satisfaction & Evaluation) might be leaving due to external offers or burnout.
+        ###### Cluster 2 (Moderate Satisfaction & Evaluation) might indicate employees who were not particularly engaged.
+
+        ## Chat GPT Version:
+        plt.figure(figsize=(15, 6))
+        plt.scatter(cluster_data.satisfaction_level, cluster_data.last_evaluation, c=cluster_data.clus_label,
+                    cmap='viridis', edgecolors='k', alpha=0.7)
+        plt.xlabel('Satisfaction Level')
+        plt.ylabel('Last Evaluation')
+        plt.title('Chat GPT Version: K-Means Clustering of Employees Who Left')
+        plt.legend()
+        plt.show()
+        plt.figure(figsize=(15, 6))
+        plt.scatter(cluster_data.satisfaction_level, cluster_data.last_evaluation, c=cluster_data.clus_label,
+                    cmap='viridis', edgecolors='k', alpha=0.7)
+        plt.scatter(kmm.cluster_centers_[:, 0], kmm.cluster_centers_[:, 1], s=300, c='red', marker='X',
+                    label="Centroids")
+        plt.xlabel('Satisfaction Level')
+        plt.ylabel('Last Evaluation')
+        plt.title('Chat GPT Version: K-Means Clustering of Employees Who Left')
+        plt.legend()
         plt.show()
 
 
         ######### Splitting Data ##########
-        X = encoded_data.drop(columns='average_montly_hours')
-        y = encoded_data.average_montly_hours  # always a series
-        print(f"x= ",X.shape)
-        print(f"y= ",y.shape)
-
-        X_train, X_test, y_train, y_test = split(X, y, test_size=0.2, random_state=12) ## split train and test data by 80 and 20 percent
-
-        print(f"X_train no. of rows = ", X_train.shape[0])
-        print(f"y_train no. of rows = ", y_train.size)
-
-        print(f"X_test no. of rows  = ", X_test.shape[0])
-        print(f"y_test no. of rows  = ", y_test.size)
-
-        mlr_mod = LinearRegression()
-        mlr_mod.fit(X_train, y_train) ## fit and train the model
-
-        ####predict for first row
-        data.head(2);
-        y_pred = mlr_mod.predict([[0.38,0.53,2,157,3,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1]])
-        print(f"y_pred for first row = ", y_pred ,"but actual value of y= 157" )
-
-        y_pred2 = mlr_mod.predict([[0.8,0.86,5,262,6,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0]])
-        print(f"y_pred for second row = ", y_pred2,"but actual value of y= 262")
-
-
-        ###### predict for Test and Train
-        pred_train_mlr = mlr_mod.predict(X_train)
-        pred_test_mlr = mlr_mod.predict(X_test)
-
-        print(f"pred_train_mlr = ", pred_train_mlr)
-        print(f"pred_test_mlr = ",pred_test_mlr)
-
-        print(f"pred_train_mlr :5 = ", pred_train_mlr[:5])
-        print(f"pred_test_mlr :5 = ", pred_test_mlr[:5])
-
-        ### Evaluate the model:
-        r2Score = r2_score(y_test,pred_test_mlr)
-        print(f"r2Score = ", r2Score)
-
-        ### Plot the predictions
-        plt.figure(figsize=(20,15))
-        plt.scatter(y_test,pred_test_mlr)
-        plt.xlabel('Actual')
-        plt.ylabel('Predicted')
-        plt.title('ACTUAL vs. Predicted')
-        plt.show()
-
-        ### print predicted values
-        pred_df = pd.DataFrame({'Actual value' : y_test, 'Predicted value' : pred_test_mlr, 'Difference' : y_test - pred_test_mlr})
-        print(f"Predicted values Data frame:")
-        print(pred_df[0:20])
+        # X = encoded_data.drop(columns='average_montly_hours')
+        # y = encoded_data.average_montly_hours  # always a series
+        # print(f"x= ",X.shape)
+        # print(f"y= ",y.shape)
+        #
+        # X_train, X_test, y_train, y_test = split(X, y, test_size=0.2, random_state=12) ## split train and test data by 80 and 20 percent
+        #
+        # print(f"X_train no. of rows = ", X_train.shape[0])
+        # print(f"y_train no. of rows = ", y_train.size)
+        #
+        # print(f"X_test no. of rows  = ", X_test.shape[0])
+        # print(f"y_test no. of rows  = ", y_test.size)
+        #
+        # mlr_mod = LinearRegression()
+        # mlr_mod.fit(X_train, y_train) ## fit and train the model
+        #
+        # ####predict for first row
+        # data.head(2);
+        # y_pred = mlr_mod.predict([[0.38,0.53,2,157,3,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1]])
+        # print(f"y_pred for first row = ", y_pred ,"but actual value of y= 157" )
+        #
+        # y_pred2 = mlr_mod.predict([[0.8,0.86,5,262,6,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0]])
+        # print(f"y_pred for second row = ", y_pred2,"but actual value of y= 262")
+        #
+        #
+        # ###### predict for Test and Train
+        # pred_train_mlr = mlr_mod.predict(X_train)
+        # pred_test_mlr = mlr_mod.predict(X_test)
+        #
+        # print(f"pred_train_mlr = ", pred_train_mlr)
+        # print(f"pred_test_mlr = ",pred_test_mlr)
+        #
+        # print(f"pred_train_mlr :5 = ", pred_train_mlr[:5])
+        # print(f"pred_test_mlr :5 = ", pred_test_mlr[:5])
+        #
+        # ### Evaluate the model:
+        # r2Score = r2_score(y_test,pred_test_mlr)
+        # print(f"r2Score = ", r2Score)
+        #
+        # ### Plot the predictions
+        # plt.figure(figsize=(20,15))
+        # plt.scatter(y_test,pred_test_mlr)
+        # plt.xlabel('Actual')
+        # plt.ylabel('Predicted')
+        # plt.title('ACTUAL vs. Predicted')
+        # plt.show()
+        #
+        # ### print predicted values
+        # pred_df = pd.DataFrame({'Actual value' : y_test, 'Predicted value' : pred_test_mlr, 'Difference' : y_test - pred_test_mlr})
+        # print(f"Predicted values Data frame:")
+        # print(pred_df[0:20])
 
 
 
