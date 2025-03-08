@@ -14,10 +14,12 @@ scikit-learn==1.6.1
 please install the requirements 
 ```
 python -m pip install --upgrade pip
-python install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-## Sales Assignment - main.py
+# Sales Assignment
+
+## sales_analysis.py
 ```
 import pandas as pd
 
@@ -169,8 +171,8 @@ def sales_by_time(data, duration):
     if duration == 'quarter':
         return data['Date'].dt.quarter
 ```
-### Visualization
-#### visualization/visualize.py
+## Visualization
+### visualization/visualize.py
 ```
 import seaborn as sb
 
@@ -199,13 +201,13 @@ def line_plot(grouped_data):
     plt.show()
 ```
 
-# Run
+## Run
 ```
-python ./main.py
+python ./sales_analysis.py
 ```
-## Output
+### Output
 ```
-$ python ./main.py                                                                   
+$ python ./sales_analysis.py                                                                  
 Shape :         (7560, 6)
 Row Labels :    RangeIndex(start=0, stop=7560, step=1)
 Column Names : 
@@ -354,13 +356,176 @@ Name: sales_normalization, dtype: float64
 2025-02-07 05:29:24.345 python[83668:2789266] +[IMKClient subclass]: chose IMKClient_Modern
 2025-02-07 05:29:24.346 python[83668:2789266] +[IMKInputSession subclass]: chose IMKInputSession_Modern
 ```
-## Visualizations
+### Visualizations
 
-### State-wise sales analysis
-![State-wise sales analysis.png](visualization/images/StateWiseSalesAnalysis-final.png)
+#### State-wise sales analysis
+![State-wise sales analysis.png](visualization/images/sales_analysis/StateWiseSalesAnalysis-final.png)
 
-### Group-wise sales analysis
-![Group-wise sales analysis.png](visualization/images/GroupWiseSalesAnalysis-final.png)
+#### Group-wise sales analysis
+![Group-wise sales analysis.png](visualization/images/sales_analysis/GroupWiseSalesAnalysis-final.png)
 
-### Time-of-the-day analysis
-![Time-of-the-day analysis.png](visualization/images/TimeOfTheDayAnalysis-final.png)
+#### Time-of-the-day analysis
+![Time-of-the-day analysis.png](visualization/images/sales_analysis/TimeOfTheDayAnalysis-final.png)
+
+# Employee Turnover
+
+## employee_turnover.py
+
+## Run
+```
+python ./employee_turnover.py
+```
+### Output
+```
+Shape : 	(14999, 10)
+Row Labels : 	RangeIndex(start=0, stop=14999, step=1)
+Column Names : 
+Index(['satisfaction_level', 'last_evaluation', 'number_project',
+       'average_montly_hours', 'time_spend_company', 'Work_accident', 'left',
+       'promotion_last_5years', 'sales', 'salary'],
+      dtype='object')
+DataType : 
+satisfaction_level       float64
+last_evaluation          float64
+number_project             int64
+average_montly_hours       int64
+time_spend_company         int64
+Work_accident              int64
+left                       int64
+promotion_last_5years      int64
+sales                     object
+salary                    object
+dtype: object
+satisfaction_level       0
+last_evaluation          0
+number_project           0
+average_montly_hours     0
+time_spend_company       0
+Work_accident            0
+left                     0
+promotion_last_5years    0
+sales                    0
+salary                   0
+dtype: int64
+column which has null is
+Series([], dtype: int64)
+Shape : 	(14999, 10)
+Row Labels : 	RangeIndex(start=0, stop=14999, step=1)
+Column Names : 
+Index(['satisfaction_level', 'last_evaluation', 'number_project',
+       'average_montly_hours', 'time_spend_company', 'Work_accident', 'left',
+       'promotion_last_5years', 'department', 'salary'],
+      dtype='object')
+DataType : 
+satisfaction_level       float64
+last_evaluation          float64
+number_project             int64
+average_montly_hours       int64
+time_spend_company         int64
+Work_accident              int64
+left                       int64
+promotion_last_5years      int64
+department                object
+salary                    object
+dtype: object
+satisfaction_level       0
+last_evaluation          0
+number_project           0
+average_montly_hours     0
+time_spend_company       0
+Work_accident            0
+left                     0
+promotion_last_5years    0
+department               0
+salary                   0
+dtype: int64
+column which has null is
+Series([], dtype: int64)
+Shape : 	(14999, 12)
+Row Labels : 	RangeIndex(start=0, stop=14999, step=1)
+Column Names : 
+Index(['satisfaction_level', 'last_evaluation', 'number_project',
+       'average_montly_hours', 'time_spend_company', 'Work_accident', 'left',
+       'promotion_last_5years', 'department', 'salary', 'salary_encoded',
+       'department_encoded'],
+      dtype='object')
+DataType : 
+satisfaction_level       float64
+last_evaluation          float64
+number_project             int64
+average_montly_hours       int64
+time_spend_company         int64
+Work_accident              int64
+left                       int64
+promotion_last_5years      int64
+department                object
+salary                    object
+salary_encoded             int64
+department_encoded         int64
+dtype: object
+satisfaction_level       0
+last_evaluation          0
+number_project           0
+average_montly_hours     0
+time_spend_company       0
+Work_accident            0
+left                     0
+promotion_last_5years    0
+department               0
+salary                   0
+salary_encoded           0
+department_encoded       0
+dtype: int64
+column which has null is
+Series([], dtype: int64)
+Shape : 	(14999, 10)
+Row Labels : 	RangeIndex(start=0, stop=14999, step=1)
+Column Names : 
+Index(['satisfaction_level', 'last_evaluation', 'number_project',
+       'average_montly_hours', 'time_spend_company', 'Work_accident', 'left',
+       'promotion_last_5years', 'salary_encoded', 'department_encoded'],
+      dtype='object')
+DataType : 
+satisfaction_level       float64
+last_evaluation          float64
+number_project             int64
+average_montly_hours       int64
+time_spend_company         int64
+Work_accident              int64
+left                       int64
+promotion_last_5years      int64
+salary_encoded             int64
+department_encoded         int64
+dtype: object
+satisfaction_level       0
+last_evaluation          0
+number_project           0
+average_montly_hours     0
+time_spend_company       0
+Work_accident            0
+left                     0
+promotion_last_5years    0
+salary_encoded           0
+department_encoded       0
+dtype: int64
+column which has null is
+Series([], dtype: int64)
+```
+### Visualizations
+
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/correlation_matrix_2.1.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/satisfaction_level_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/last_evaluation_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/average_monthly_hours_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/all_2.2.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/number_projects_2.3.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/number_projects_percentage_2.3.png)
+#### Correlation Matrix
+![correlation_matrix.png](visualization/images/employee_turnover/number_projects_proportion_2.3.png)
