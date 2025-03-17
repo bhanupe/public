@@ -7,10 +7,14 @@ from sklearn.preprocessing import StandardScaler
 
 from visualization.visualize import heat_map, hist_plot, bar_plot, count_plot
 from wrangling.insights import explain, group_by_features
-from sklearn.model_selection import train_test_split as split
+from sklearn.model_selection import train_test_split as split, train_test_split
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import r2_score
 from sklearn.cluster import KMeans
+
+import numpy as np
+from imblearn.over_sampling import SMOTE
+from sklearn.datasets import make_classification
 
 # Main Execution
 if __name__ == "__main__":
@@ -151,6 +155,38 @@ if __name__ == "__main__":
         plt.title('Chat GPT Version: K-Means Clustering of Employees Who Left')
         plt.legend()
         plt.show()
+
+        #4.1 - Pre-process the data by converting categorical columns to numerical columns - Done Line #- 39
+        #4.2 -n Do the stratified split of the dataset to train and test in the ratio 80:20 with random_state=123
+
+        X = encoded_data.drop(columns=['left'])  # Features
+        y = encoded_data['left']  # Target variable
+
+
+        # Step 3: Stratified Train-Test Split (80:20)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=123)
+
+        # Visualization before applying SMOTE
+        fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+        sb.countplot(x=y_train, ax=axes[0])
+        axes[0].set_title("Before SMOTE")
+        axes[0].set_xlabel("Left (0 = Stayed, 1 = Left)")
+
+
+        # Step 4: Handle Class Imbalance Using SMOTE
+        smote = SMOTE(sampling_strategy='auto', random_state=123)
+        X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
+
+        sb.countplot(x=y_train_resampled, ax=axes[1])
+        axes[1].set_title("After SMOTE")
+        axes[1].set_xlabel("Left (0 = Stayed, 1 = Left)")
+
+        plt.show()
+
+        # Step 5: Verify Class Distribution Before & After
+        print("Original Training Set Class Distribution:", dict(pd.Series(y_train).value_counts()))
+        print("After SMOTE Class Distribution:", dict(pd.Series(y_train_resampled).value_counts()))
+
 
 
         ######### Splitting Data ##########
