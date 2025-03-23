@@ -11,6 +11,11 @@ from sklearn.model_selection import train_test_split as split, train_test_split
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import r2_score
 from sklearn.cluster import KMeans
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.metrics import classification_report
 
 import numpy as np
 from imblearn.over_sampling import SMOTE
@@ -186,6 +191,68 @@ if __name__ == "__main__":
         # Step 5: Verify Class Distribution Before & After
         print("Original Training Set Class Distribution:", dict(pd.Series(y_train).value_counts()))
         print("After SMOTE Class Distribution:", dict(pd.Series(y_train_resampled).value_counts()))
+
+        print("X_train_resampled" , X_train_resampled)
+        print("y_train_resampled" , y_train_resampled)
+
+        print(y_train_resampled is None)  # Should be False
+        print(type(y_train_resampled))  # Should be DataFrame or array
+
+        # Step 5.1: Train a logistic regression model, apply a 5-fold CV, and plot the classification report.
+
+        # Initialize the model
+        logreg = LogisticRegression(max_iter=5000)
+
+        # Create stratified k-fold cross-validator
+        skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+        # Perform cross-validated predictions
+        y_pred_logreg = cross_val_predict(logreg, X_train_resampled, y_train_resampled, cv=skf)
+
+        # Print classification report
+        # 1. Precision
+        # Class 0 (Stayed): 81.6% of the employees predicted as “stayed” actually stayed.
+        # Class 1 (Left): 80.2% of the employees predicted as “left” actually left.
+        # Interpretation: model does a good job avoiding false positives in both classes.
+
+        #2. Recall
+        # Class 0: 79.8% of all actual “stayed” employees were correctly predicted.
+        # Class 1: 82.1% of all actual “left” employees were correctly predicted.
+        # Interpretation: model does slightly better at identifying who left, which is often more important in turnover prediction.
+
+        #3. F1-Score
+        # Combines precision and recall into a balanced score.
+        # Both classes have F1 around 0.81, meaning your model is performing fairly evenly and well across both classes.
+
+        print("Classification Report for Logistic Regression (5-Fold CV):")
+        print(classification_report(y_train_resampled, y_pred_logreg, digits=3))
+
+        # 5.2 Train a Random Forest Classifier model, apply the 5-fold CV, and plot
+        # the classification report.
+
+        # Step 1: Create the model
+        rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+        # Step 3: Generate predictions using 5-fold CV
+        y_pred_rf = cross_val_predict(rf_model, X_train_resampled, y_train_resampled, cv=skf)
+
+        # Step 4: Print classification report
+        print("Classification Report for Random Forest (5-Fold CV):")
+        print(classification_report(y_train_resampled, y_pred_rf, digits=3))
+
+        # 5.3 Train a Gradient Boosting Classifier model, apply the 5-fold CV, and
+        # plot the classification report.
+        # Step 1: Create the model
+        gb_model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=42)
+
+        # Step 3: Perform cross-validated predictions
+        y_pred_gb = cross_val_predict(gb_model, X_train_resampled, y_train_resampled, cv=skf)
+
+        # Step 4: Classification report
+        print("Classification Report for Gradient Boosting (5-Fold CV):")
+        print(classification_report(y_train_resampled, y_pred_gb, digits=3))
+
+
 
 
 
