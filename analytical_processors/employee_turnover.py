@@ -9,7 +9,7 @@ from visualization.visualize import heat_map, hist_plot, bar_plot, count_plot
 from wrangling.insights import explain, group_by_features
 from sklearn.model_selection import train_test_split as split, train_test_split
 from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, roc_auc_score, roc_curve, confusion_matrix
 from sklearn.cluster import KMeans
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -210,12 +210,12 @@ if __name__ == "__main__":
         y_pred_logreg = cross_val_predict(logreg, X_train_resampled, y_train_resampled, cv=skf)
 
         # Print classification report
-        # 1. Precision
+        # 1. Precision -
         # Class 0 (Stayed): 81.6% of the employees predicted as “stayed” actually stayed.
         # Class 1 (Left): 80.2% of the employees predicted as “left” actually left.
         # Interpretation: model does a good job avoiding false positives in both classes.
 
-        #2. Recall
+        #2. Recall - higher recall means we have recorded most of the people who are going to leave (if recall value is high then model is predicting correct)
         # Class 0: 79.8% of all actual “stayed” employees were correctly predicted.
         # Class 1: 82.1% of all actual “left” employees were correctly predicted.
         # Interpretation: model does slightly better at identifying who left, which is often more important in turnover prediction.
@@ -252,64 +252,126 @@ if __name__ == "__main__":
         print("Classification Report for Gradient Boosting (5-Fold CV):")
         print(classification_report(y_train_resampled, y_pred_gb, digits=3))
 
+        logreg.fit(X_train_resampled, y_train_resampled)
+        rf_model.fit(X_train_resampled, y_train_resampled)
+        gb_model.fit(X_train_resampled, y_train_resampled)
+
+        # Find the ROC/AUC for each model and plot the ROC curve.
+        log_reg_auc = roc_auc_score(y_test, logreg.predict_proba(X_test)[:, 1])
+        rf_auc = roc_auc_score(y_test, rf_model.predict_proba(X_test)[:, 1])
+        gb_auc = roc_auc_score(y_test, gb_model.predict_proba(X_test)[:, 1])
+
+        #Plot ROC curves
+        log_fpr, log_tpr, _ = roc_curve(y_test, logreg.predict_proba(X_test)[:, 1])
+        rf_fpr, rf_tpr, _ = roc_curve(y_test, rf_model.predict_proba(X_test)[:, 1])
+        gb_fpr, gb_tpr, _ = roc_curve(y_test, gb_model.predict_proba(X_test)[:, 1])
+
+        plt.figure(figsize=(8, 6))
+        plt.plot(log_fpr, log_tpr, label=f'Logistic Regression (AUC = {log_reg_auc:.5f})')
+        plt.plot(rf_fpr, rf_tpr, label=f'Random Forest (AUC = {rf_auc:.5f})')
+        plt.plot(gb_fpr, gb_tpr, label=f'Gradient Boosting (AUC = {gb_auc:.5f})')
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('ROC Curve Comparison With X_train_resampled and y_train_resampled')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+        log_reg = LogisticRegression(max_iter=5000)
+        rfmodel = RandomForestClassifier(n_estimators=100, random_state=42)
+        gbmodel = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=42)
+
+        log_reg.fit(X_train, y_train)
+        rfmodel.fit(X_train, y_train)
+        gbmodel.fit(X_train, y_train)
+
+        # Find the ROC/AUC for each model and plot the ROC curve.
+        logreg_auc = roc_auc_score(y_test, log_reg.predict_proba(X_test)[:, 1])
+        rfauc = roc_auc_score(y_test, rfmodel.predict_proba(X_test)[:, 1])
+        gbauc = roc_auc_score(y_test, gbmodel.predict_proba(X_test)[:, 1])
+
+        # Plot ROC curves
+        logfpr, logtpr, _ = roc_curve(y_test, log_reg.predict_proba(X_test)[:, 1])
+        rffpr, rftpr, _ = roc_curve(y_test, rfmodel.predict_proba(X_test)[:, 1])
+        gbfpr, gbtpr, _ = roc_curve(y_test, gbmodel.predict_proba(X_test)[:, 1])
+
+        plt.figure(figsize=(8, 6))
+        plt.plot(logfpr, logtpr, label=f'Logistic Regression (AUC = {logreg_auc:.5f})')
+        plt.plot(rffpr, rftpr, label=f'Random Forest (AUC = {rfauc:.5f})')
+        plt.plot(gbfpr, gbtpr, label=f'Gradient Boosting (AUC = {gbauc:.5f})')
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('ROC Curve Comparison With X_train and Y_tran')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+        # Find the confusion matrix for each of the models.
+        # Make predictions using each model
+        logreg_preds = logreg.predict(X_test)
+        rf_preds = rf_model.predict(X_test)
+        gb_preds = gb_model.predict(X_test)
+
+        # Logistic Regression
+        print(":small_blue_diamond: Logistic Regression")
+        print("Confusion Matrix:\n", confusion_matrix(y_test, logreg_preds))
+        print("Classification Report:\n", classification_report(y_test, logreg_preds))
+
+        # Random Forest
+        print("\n:small_blue_diamond: Random Forest")
+        print("Confusion Matrix:\n", confusion_matrix(y_test, rf_preds))
+        print("Classification Report:\n", classification_report(y_test, rf_preds))
+
+        # Gradient Boosting
+        print("\n:small_blue_diamond: Gradient Boosting")
+        print("Confusion Matrix:\n", confusion_matrix(y_test, gb_preds))
+        print("Classification Report:\n", classification_report(y_test, gb_preds))
+
+         # Explain which metric needs to be used from the confusion matrix:
+        # Recall or Precision?
+        # Recall - we have to use because with good performance and Leaving,then HR might be panic if recall is high)
+
+        # 7.1 Using the best model, predict the probability of employee turnover
+        # in the test data.
+
+        # Train the best model (Random Forest)
+        #rfmodel.fit(X_train, y_train)
+
+        # Predict probabilities for class 1 (leaving)
+        rf_probabilities = rfmodel.predict_proba(X_test)[:, 1]
+
+        # Create a DataFrame to view predictions
+        rf_prob_df = pd.DataFrame({
+            'Actual': y_test.values,
+            'Predicted_Probability': rf_probabilities
+        })
+        # Display the first few rows
+        print(rf_prob_df.head(10))
 
 
+        # Define a function to assign risk zone based on probability
+        def assign_risk_zone(prob):
+            if prob < 0.20:
+                return 'Safe Zone (Green)'
+            elif 0.20 < prob <= 0.60:
+                return 'Low-Risk Zone (Yellow)'
+            elif 0.60 < prob <= 0.90:
+                return 'Medium-Risk Zone (Orange)'
+            else:
+                return 'High-Risk Zone (Red)'
 
 
-        ######### Splitting Data ##########
-        # X = encoded_data.drop(columns='average_montly_hours')
-        # y = encoded_data.average_montly_hours  # always a series
-        # print(f"x= ",X.shape)
-        # print(f"y= ",y.shape)
-        #
-        # X_train, X_test, y_train, y_test = split(X, y, test_size=0.2, random_state=12) ## split train and test data by 80 and 20 percent
-        #
-        # print(f"X_train no. of rows = ", X_train.shape[0])
-        # print(f"y_train no. of rows = ", y_train.size)
-        #
-        # print(f"X_test no. of rows  = ", X_test.shape[0])
-        # print(f"y_test no. of rows  = ", y_test.size)
-        #
-        # mlr_mod = LinearRegression()
-        # mlr_mod.fit(X_train, y_train) ## fit and train the model
-        #
-        # ####predict for first row
-        # data.head(2);
-        # y_pred = mlr_mod.predict([[0.38,0.53,2,157,3,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1]])
-        # print(f"y_pred for first row = ", y_pred ,"but actual value of y= 157" )
-        #
-        # y_pred2 = mlr_mod.predict([[0.8,0.86,5,262,6,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0]])
-        # print(f"y_pred for second row = ", y_pred2,"but actual value of y= 262")
-        #
-        #
-        # ###### predict for Test and Train
-        # pred_train_mlr = mlr_mod.predict(X_train)
-        # pred_test_mlr = mlr_mod.predict(X_test)
-        #
-        # print(f"pred_train_mlr = ", pred_train_mlr)
-        # print(f"pred_test_mlr = ",pred_test_mlr)
-        #
-        # print(f"pred_train_mlr :5 = ", pred_train_mlr[:5])
-        # print(f"pred_test_mlr :5 = ", pred_test_mlr[:5])
-        #
-        # ### Evaluate the model:
-        # r2Score = r2_score(y_test,pred_test_mlr)
-        # print(f"r2Score = ", r2Score)
-        #
-        # ### Plot the predictions
-        # plt.figure(figsize=(20,15))
-        # plt.scatter(y_test,pred_test_mlr)
-        # plt.xlabel('Actual')
-        # plt.ylabel('Predicted')
-        # plt.title('ACTUAL vs. Predicted')
-        # plt.show()
-        #
-        # ### print predicted values
-        # pred_df = pd.DataFrame({'Actual value' : y_test, 'Predicted value' : pred_test_mlr, 'Difference' : y_test - pred_test_mlr})
-        # print(f"Predicted values Data frame:")
-        # print(pred_df[0:20])
+        # Apply the risk zone categorization
+        rf_prob_df['Risk_Zone'] = rf_prob_df['Predicted_Probability'].apply(assign_risk_zone)
 
-
+        # Count number of employees in each risk zone
+        risk_zone_counts = rf_prob_df['Risk_Zone'].value_counts().reset_index()
+        risk_zone_counts.columns = ['Risk Zone', 'Employee Count']
+        print(risk_zone_counts)
 
 
     except Exception as e:
