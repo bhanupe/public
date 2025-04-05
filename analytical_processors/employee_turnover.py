@@ -1,25 +1,22 @@
-import pandas as pd
-import numpy as np
-import seaborn as sb
-import matplotlib.pyplot as plt
 import copy
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sb
+from imblearn.over_sampling import SMOTE
+from sklearn.cluster import KMeans
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from visualization.visualize import heat_map, hist_plot, bar_plot, count_plot
-from wrangling.insights import explain, group_by_features
-from sklearn.model_selection import train_test_split as split, train_test_split
-from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.metrics import r2_score, roc_auc_score, roc_curve, confusion_matrix
-from sklearn.cluster import KMeans
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
-from sklearn.metrics import classification_report
-
-import numpy as np
-from imblearn.over_sampling import SMOTE
-from sklearn.datasets import make_classification
+from visualization.visualize import heat_map, hist_plot, count_plot
+from wrangling.insights import explain
 
 # Main Execution
 if __name__ == "__main__":
@@ -55,32 +52,31 @@ if __name__ == "__main__":
 
         # in the correlation matrix, value
         # The correlation values range from -1 to 1:
-            # 1 means perfect positive correlation,
-            # -1 means perfect negative correlation,
-            # 0 means no correlation.
-            # Based on a predefined threshold (for example, 0.9), you can identify pairs of columns that are highly correlated and drop them.
+        # 1 means perfect positive correlation,
+        # -1 means perfect negative correlation,
+        # 0 means no correlation.
+        # Based on a predefined threshold (for example, 0.9), you can identify pairs of columns that are highly correlated and drop them.
         print(f'Describe Correlation : \n{corr_mat}')
         heat_map(corr_mat)
 
         # Reasons behind employees leaving are influenced by
         # satisfaction_level -> salary -> work_accident -> department
 
-
         ########## Distribution plot ##############
-        #Outcome of the Distributions:
+        # Outcome of the Distributions:
         # Employee Satisfaction (satisfaction_level)
-            # The distribution is bimodal, with peaks at low (around 0.1) and high (around 0.7-0.8) satisfaction levels.
-            # This suggests that employees tend to be either very satisfied or very dissatisfied.
+        # The distribution is bimodal, with peaks at low (around 0.1) and high (around 0.7-0.8) satisfaction levels.
+        # This suggests that employees tend to be either very satisfied or very dissatisfied.
         hist_plot(encoded_data['satisfaction_level'])
 
         # Employee Evaluation (last_evaluation)
-            # The distribution shows peaks around 0.5 and 0.85-1.0.
-            # This suggests two groups: moderate performers and highly evaluated employees.
+        # The distribution shows peaks around 0.5 and 0.85-1.0.
+        # This suggests two groups: moderate performers and highly evaluated employees.
         hist_plot(encoded_data['last_evaluation'])
 
         # Employee Average Monthly Hours (average_monthly_hours)
-            # The distribution is right-skewed, with peaks around 150-200 and 250+ hours.
-            # This suggests two work-hour groups: regular workers and overworked employees.
+        # The distribution is right-skewed, with peaks around 150-200 and 250+ hours.
+        # This suggests two work-hour groups: regular workers and overworked employees.
         hist_plot(encoded_data['average_montly_hours'])
         ########## Distribution plot ##############
 
@@ -94,21 +90,22 @@ if __name__ == "__main__":
             sb.histplot(df_left[col], kde=True, bins=30, color="red")
             plt.title(f"Distribution of {col} (Employees who left)")
         plt.tight_layout()
-        #plt.show()
-
+        # plt.show()
 
         ########## 2.3 Bar plot ##############
         # 2.3. Draw the bar plot of the employee project count of both employees
         # who left and stayed in the organization (use column number_project
         # and hue column left), and give your inferences from the plot.
         ########## Inference from countPlot is Employees with low number of projects which is 2 and Employees with high number of projects(7) left the company #################
-        count_plot(encoded_data, 'number_project', 'left', 'Employee Project Count by Left/Stayed Status', 'Number of Projects',
+        count_plot(encoded_data, 'number_project', 'left', 'Employee Project Count by Left/Stayed Status',
+                   'Number of Projects',
                    'Count of Employees', "count")
-        count_plot(encoded_data,'number_project','left','Employee Project Percent by Left/Stayed Status','Number of Projects',
-                   'Percentage of Employees','percent')
-        count_plot(encoded_data, 'number_project', 'left', 'Employee Project Proportion by Left/Stayed Status', 'Number of Projects',
+        count_plot(encoded_data, 'number_project', 'left', 'Employee Project Percent by Left/Stayed Status',
+                   'Number of Projects',
+                   'Percentage of Employees', 'percent')
+        count_plot(encoded_data, 'number_project', 'left', 'Employee Project Proportion by Left/Stayed Status',
+                   'Number of Projects',
                    'Proportion of Employees', 'proportion')
-
 
         ## K-Means Clustering Steps
         ## 3.1 Choose columns satisfaction_level, last_evaluation, and left.
@@ -133,7 +130,7 @@ if __name__ == "__main__":
         ## Visualize Scatter Plot after K-Means clustering.
         f = plt.subplots(1, 1, figsize=(15, 6))
         sb.scatterplot(x=cluster_data.satisfaction_level, y=cluster_data.last_evaluation, hue=cluster_data.clus_label,
-                      palette='rainbow_r')
+                       palette='rainbow_r')
         plt.show()
 
         ## 3.3 Inference from Clusters
@@ -161,12 +158,11 @@ if __name__ == "__main__":
         plt.legend()
         plt.show()
 
-        #4.1 - Pre-process the data by converting categorical columns to numerical columns - Done Line #- 39
-        #4.2 -n Do the stratified split of the dataset to train and test in the ratio 80:20 with random_state=123
+        # 4.1 - Pre-process the data by converting categorical columns to numerical columns - Done Line #- 39
+        # 4.2 -n Do the stratified split of the dataset to train and test in the ratio 80:20 with random_state=123
 
         X = encoded_data.drop(columns=['left'])  # Features
         y = encoded_data['left']  # Target variable
-
 
         # Step 3: Stratified Train-Test Split (80:20)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=123)
@@ -176,7 +172,6 @@ if __name__ == "__main__":
         sb.countplot(x=y_train, ax=axes[0])
         axes[0].set_title("Before SMOTE")
         axes[0].set_xlabel("Left (0 = Stayed, 1 = Left)")
-
 
         # Step 4: Handle Class Imbalance Using SMOTE
         smote = SMOTE(sampling_strategy='auto', random_state=123)
@@ -192,8 +187,8 @@ if __name__ == "__main__":
         print("Original Training Set Class Distribution:", dict(pd.Series(y_train).value_counts()))
         print("After SMOTE Class Distribution:", dict(pd.Series(y_train_resampled).value_counts()))
 
-        print("X_train_resampled" , X_train_resampled)
-        print("y_train_resampled" , y_train_resampled)
+        print("X_train_resampled", X_train_resampled)
+        print("y_train_resampled", y_train_resampled)
 
         print(y_train_resampled is None)  # Should be False
         print(type(y_train_resampled))  # Should be DataFrame or array
@@ -215,12 +210,12 @@ if __name__ == "__main__":
         # Class 1 (Left): 80.2% of the employees predicted as “left” actually left.
         # Interpretation: model does a good job avoiding false positives in both classes.
 
-        #2. Recall - higher recall means we have recorded most of the people who are going to leave (if recall value is high then model is predicting correct)
+        # 2. Recall - higher recall means we have recorded most of the people who are going to leave (if recall value is high then model is predicting correct)
         # Class 0: 79.8% of all actual “stayed” employees were correctly predicted.
         # Class 1: 82.1% of all actual “left” employees were correctly predicted.
         # Interpretation: model does slightly better at identifying who left, which is often more important in turnover prediction.
 
-        #3. F1-Score
+        # 3. F1-Score
         # Combines precision and recall into a balanced score.
         # Both classes have F1 around 0.81, meaning your model is performing fairly evenly and well across both classes.
 
@@ -261,7 +256,7 @@ if __name__ == "__main__":
         rf_auc = roc_auc_score(y_test, rf_model.predict_proba(X_test)[:, 1])
         gb_auc = roc_auc_score(y_test, gb_model.predict_proba(X_test)[:, 1])
 
-        #Plot ROC curves
+        # Plot ROC curves
         log_fpr, log_tpr, _ = roc_curve(y_test, logreg.predict_proba(X_test)[:, 1])
         rf_fpr, rf_tpr, _ = roc_curve(y_test, rf_model.predict_proba(X_test)[:, 1])
         gb_fpr, gb_tpr, _ = roc_curve(y_test, gb_model.predict_proba(X_test)[:, 1])
@@ -331,7 +326,7 @@ if __name__ == "__main__":
         print("Confusion Matrix:\n", confusion_matrix(y_test, gb_preds))
         print("Classification Report:\n", classification_report(y_test, gb_preds))
 
-         # Explain which metric needs to be used from the confusion matrix:
+        # Explain which metric needs to be used from the confusion matrix:
         # Recall or Precision?
         # Recall - we have to use because with good performance and Leaving,then HR might be panic if recall is high)
 
@@ -339,7 +334,7 @@ if __name__ == "__main__":
         # in the test data.
 
         # Train the best model (Random Forest)
-        #rfmodel.fit(X_train, y_train)
+        # rfmodel.fit(X_train, y_train)
 
         # Predict probabilities for class 1 (leaving)
         rf_probabilities = rfmodel.predict_proba(X_test)[:, 1]
