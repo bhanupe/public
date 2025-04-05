@@ -1,4 +1,3 @@
-
 # Employee Turnover
 
 ## employee_turnover.py
@@ -733,30 +732,71 @@ Process finished with exit code 0
 ```
 ### Visualizations
 
-#### Correlation Matrix
+### Section - 2.1 Heatmap of the correlation
+#### Correlation Matrix Summary
+        # The correlation values range from -1 to 1:
+            # 1 means perfect positive correlation,
+            # -1 means perfect negative correlation,
+            # 0 means no correlation.
+            # Based on a predefined threshold (for example, 0.9), you can identify pairs of columns that are highly correlated and drop them.
+            # Reasons behind employees leaving are influenced by satisfaction_level -> salary -> work_accident -> department
 ![correlation_matrix.png](visualization/images/employee_turnover/correlation_matrix_2.1.png)
-#### Correlation Matrix
+### Section - 2.2 Distribution Plot Summary
+#### Distribution Plot for satisfaction level and Employee count
+#### Outcome of the Distributions:
+        # Employee Satisfaction (satisfaction_level)
+            # The distribution is bimodal, with peaks at low (around 0.1) and high (around 0.7-0.8) satisfaction levels.
+            # This suggests that employees tend to be either very satisfied or very dissatisfied.
 ![correlation_matrix.png](visualization/images/employee_turnover/satisfaction_level_2.2.png)
-#### Correlation Matrix
+
+#### Distribution Plot for last evaluation and Employee count
+#### Employee Evaluation (last_evaluation)
+            # The distribution shows peaks around 0.5 and 0.85-1.0.
+            # This suggests two groups: moderate performers and highly evaluated employees.
 ![correlation_matrix.png](visualization/images/employee_turnover/last_evaluation_2.2.png)
-#### Correlation Matrix
+#### Distribution Plot for average monthly hours and Employee count
+#### Employee Average Monthly Hours (average_monthly_hours)
+            # The distribution is right-skewed, with peaks around 150-200 and 250+ hours.
+            # This suggests two work-hour groups: regular workers and overworked employees.
 ![correlation_matrix.png](visualization/images/employee_turnover/average_monthly_hours_2.2.png)
-#### Correlation Matrix
+#### Distribution of satisfaction level, last evaluation and average monthly hours [for employees who left]
 ![correlation_matrix.png](visualization/images/employee_turnover/all_2.2.png)
-#### Correlation Matrix
+
+### Section - 2.3 Bar Plot Summary
+         Inference from countPlot is Employees with low number of projects which is 2 and 
+         Employees with high number of projects(7) left the company
+#### Bar plot for Employee Project count by left/stayed status 
 ![correlation_matrix.png](visualization/images/employee_turnover/number_projects_2.3.png)
-#### Correlation Matrix
+#### Bar plot for Employee Project % by left/stayed status 
 ![correlation_matrix.png](visualization/images/employee_turnover/number_projects_percentage_2.3.png)
+#### Bar plot for Employee Proportion by left/stayed status 
+![correlation_matrix.png](visualization/images/employee_turnover/number_projects_proportion_2.3.png)
 
-#### Clustering
+### Section - 3.2 Clustering
+#### 3.3 Inference from Clusters
+        Cluster 0 (Low Satisfaction, High Evaluation) employees are at the highest risk—even if they perform well, they leave due to dissatisfaction.
+        Cluster 1 (High Satisfaction & Evaluation) might be leaving due to external offers or burnout.
+        Cluster 2 (Moderate Satisfaction & Evaluation) might indicate employees who were not particularly engaged.
+#### Clustering for satisfaction level and last evaluation for employees who left
 ![Emp_Turnover_Figure_6.png](visualization/images/employee_turnover/Emp_Turnover_Figure_6.png)
-![Emp_Turnover_Figure_11.png](visualization/images/employee_turnover/Emp_Turnover_Figure_11.png)
-![Emp_Turnover_Figure_12.png](visualization/images/employee_turnover/Emp_Turnover_Figure_12.png)
 
-#### Smote
+#### Section 4. Smote - Before and After
+    After applying SMOTE, the number of samples for employees who left and those who stayed are approx balanced, enabling fairer model training
 ![Emp_Turnover_Figure_13.png](visualization/images/employee_turnover/Emp_Turnover_Figure_13.png)
 
 
-#### ROC
+#### Section 6 - ROC - Curve comparison with X train and y train [resampled]
+    The ROC AUC curve is to the top left corner, the better the model
+    So, as per our graph - the better model is Random Forest which has the highest AUC value - 0.99564 for resampled and 0.99502 for raw data
 ![Emp_Turnover_Figure_21.png](visualization/images/employee_turnover/Emp_Turnover_Figure_21.png)
+#### ROC - Curve comparison with X train and y train 
 ![Emp_Turnover_Figure_23.png](visualization/images/employee_turnover/Emp_Turnover_Figure_22.png)
+
+#### Section 7 - Zone category and its predicted employee count
+
+Risk Zone  Employee Count
+
+          Safe Zone (Green)            2244
+      High-Risk Zone (Red)             634
+ Medium-Risk Zone (Orange)             72
+    Low-Risk Zone (Yellow)             50
