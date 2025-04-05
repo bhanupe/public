@@ -7,7 +7,6 @@ python ./employee_turnover.py
 ```
 ### Output
 ```
-/Users/vijaypeddimsetti/git/ads-eng-experience-notifications/venv/bin/python /Users/vijaypeddimsetti/PycharmProjects/public/analytical_processors/employee_turnover.py
 Shape : 	(14999, 10)
 Row labels : 	RangeIndex(start=0, stop=14999, step=1)
 Column names : 
@@ -521,12 +520,7 @@ salary_medium            -0.847144       1.000000
 0                0.38             0.53           2
 1                0.80             0.86           1
 2                0.11             0.88           0
-2025-04-05 12:44:07.915 python[79705:12245467] +[IMKClient subclass]: chose IMKClient_Modern
-2025-04-05 12:44:07.915 python[79705:12245467] +[IMKInputSession subclass]: chose IMKInputSession_Modern
-/Users/vijaypeddimsetti/PycharmProjects/public/analytical_processors/employee_turnover.py:151: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
-  plt.legend()
-/Users/vijaypeddimsetti/git/ads-eng-experience-notifications/venv/lib/python3.9/site-packages/sklearn/base.py:474: FutureWarning: `BaseEstimator._validate_data` is deprecated in 1.6 and will be removed in 1.7. Use `sklearn.utils.validation.validate_data` instead. This function becomes public and is part of the scikit-learn developer API.
-  warnings.warn(
+
 Original Training Set Class Distribution: {0: np.int64(9142), 1: np.int64(2857)}
 After SMOTE Class Distribution: {0: np.int64(9142), 1: np.int64(9142)}
 X_train_resampled        satisfaction_level  last_evaluation  number_project  \
@@ -729,7 +723,7 @@ weighted avg       0.97      0.97      0.97      3000
 Process finished with exit code 0
 
 ```
-### Visualizations
+## Visualizations
 
 ### Section - 2.1 Heatmap of the correlation
 #### Correlation Matrix Summary
@@ -779,23 +773,21 @@ Process finished with exit code 0
 #### Clustering for satisfaction level and last evaluation for employees who left
 ![Emp_Turnover_Figure_6.png](visualization/images/employee_turnover/Emp_Turnover_Figure_6.png)
 
-#### Section 4. Smote - Before and After
+### Section 4. Smote - Before and After
     After applying SMOTE, the number of samples for employees who left and those who stayed are approx balanced, enabling fairer model training
 ![Emp_Turnover_Figure_13.png](visualization/images/employee_turnover/Emp_Turnover_Figure_13.png)
 
-
-#### Section 6 - ROC - Curve comparison with X train and y train [resampled]
+### Section 6 - ROC - Curve comparison with X train and y train [resampled]
     The ROC AUC curve is to the top left corner, the better the model
     So, as per our graph - the better model is Random Forest which has the highest AUC value - 0.99564 for resampled and 0.99502 for raw data
 ![Emp_Turnover_Figure_21.png](visualization/images/employee_turnover/Emp_Turnover_Figure_21.png)
 #### ROC - Curve comparison with X train and y train 
 ![Emp_Turnover_Figure_23.png](visualization/images/employee_turnover/Emp_Turnover_Figure_22.png)
 
-#### Section 7 - Zone category and its predicted employee count
-
+### Section 7 - Zone category and its predicted employee count
 Risk Zone  Employee Count
 
-          Safe Zone (Green)            2244
       High-Risk Zone (Red)             634
- Medium-Risk Zone (Orange)             72
+       Medium-Risk Zone (Orange)       72
     Low-Risk Zone (Yellow)             50
+          Safe Zone (Green)            2244

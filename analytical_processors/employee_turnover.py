@@ -107,7 +107,7 @@ if __name__ == "__main__":
                    'Number of Projects',
                    'Proportion of Employees', 'proportion')
 
-        ## K-Means Clustering Steps
+        ########## K-Means Clustering Steps ##########
         ## 3.1 Choose columns satisfaction_level, last_evaluation, and left.
         test_data = encoded_data[encoded_data['left'] == 1][['satisfaction_level', 'last_evaluation']]
         test_data.head(2)
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         kmm.fit(scaled)
         cluster_labels = kmm.predict(scaled)
 
-        ## K-Means Cluster profiling
+        ########## K-Means Cluster profiling ##########
         cluster_data = copy.deepcopy(test_data)
         cluster_data['clus_label'] = cluster_labels
         print('----')
@@ -133,10 +133,10 @@ if __name__ == "__main__":
                        palette='rainbow_r')
         plt.show()
 
-        ## 3.3 Inference from Clusters
-        ###### Cluster 0 (Low Satisfaction, High Evaluation) employees are at the highest risk—even if they perform well, they leave due to dissatisfaction.
-        ###### Cluster 1 (High Satisfaction & Evaluation) might be leaving due to external offers or burnout.
-        ###### Cluster 2 (Moderate Satisfaction & Evaluation) might indicate employees who were not particularly engaged.
+        ########## 3.3 Inference from Clusters ##########
+        ### Cluster 0 (Low Satisfaction, High Evaluation) employees are at the highest risk—even if they perform well, they leave due to dissatisfaction.
+        ### Cluster 1 (High Satisfaction & Evaluation) might be leaving due to external offers or burnout.
+        ### Cluster 2 (Moderate Satisfaction & Evaluation) might indicate employees who were not particularly engaged.
 
         ## Chat GPT Version:
         plt.figure(figsize=(15, 6))
@@ -158,9 +158,9 @@ if __name__ == "__main__":
         plt.legend()
         plt.show()
 
-        # 4.1 - Pre-process the data by converting categorical columns to numerical columns - Done Line #- 39
-        # 4.2 -n Do the stratified split of the dataset to train and test in the ratio 80:20 with random_state=123
-
+        ########## SMOTE ##########
+        ### 4.1 - Pre-process the data by converting categorical columns to numerical columns - Done Line #- 39
+        ### 4.2 -n Do the stratified split of the dataset to train and test in the ratio 80:20 with random_state=123
         X = encoded_data.drop(columns=['left'])  # Features
         y = encoded_data['left']  # Target variable
 
@@ -183,6 +183,7 @@ if __name__ == "__main__":
 
         plt.show()
 
+        ########## 5-fold cross-validation ##########
         # Step 5: Verify Class Distribution Before & After
         print("Original Training Set Class Distribution:", dict(pd.Series(y_train).value_counts()))
         print("After SMOTE Class Distribution:", dict(pd.Series(y_train_resampled).value_counts()))
@@ -194,7 +195,6 @@ if __name__ == "__main__":
         print(type(y_train_resampled))  # Should be DataFrame or array
 
         # Step 5.1: Train a logistic regression model, apply a 5-fold CV, and plot the classification report.
-
         # Initialize the model
         logreg = LogisticRegression(max_iter=5000)
 
@@ -251,6 +251,7 @@ if __name__ == "__main__":
         rf_model.fit(X_train_resampled, y_train_resampled)
         gb_model.fit(X_train_resampled, y_train_resampled)
 
+        ########## ROC/AUC confusion matrix ##########
         # Find the ROC/AUC for each model and plot the ROC curve.
         log_reg_auc = roc_auc_score(y_test, logreg.predict_proba(X_test)[:, 1])
         rf_auc = roc_auc_score(y_test, rf_model.predict_proba(X_test)[:, 1])
