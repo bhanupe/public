@@ -7,6 +7,7 @@ python ./employee_turnover.py
 ```
 ### Output
 ```
+/Users/vijaypeddimsetti/git/ads-eng-experience-notifications/venv/bin/python /Users/vijaypeddimsetti/PycharmProjects/public/analytical_processors/employee_turnover.py
 Shape : 	(14999, 10)
 Row labels : 	RangeIndex(start=0, stop=14999, step=1)
 Column names : 
@@ -520,7 +521,12 @@ salary_medium            -0.847144       1.000000
 0                0.38             0.53           2
 1                0.80             0.86           1
 2                0.11             0.88           0
-
+2025-04-05 12:44:07.915 python[79705:12245467] +[IMKClient subclass]: chose IMKClient_Modern
+2025-04-05 12:44:07.915 python[79705:12245467] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+/Users/vijaypeddimsetti/PycharmProjects/public/analytical_processors/employee_turnover.py:151: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  plt.legend()
+/Users/vijaypeddimsetti/git/ads-eng-experience-notifications/venv/lib/python3.9/site-packages/sklearn/base.py:474: FutureWarning: `BaseEstimator._validate_data` is deprecated in 1.6 and will be removed in 1.7. Use `sklearn.utils.validation.validate_data` instead. This function becomes public and is part of the scikit-learn developer API.
+  warnings.warn(
 Original Training Set Class Distribution: {0: np.int64(9142), 1: np.int64(2857)}
 After SMOTE Class Distribution: {0: np.int64(9142), 1: np.int64(9142)}
 X_train_resampled        satisfaction_level  last_evaluation  number_project  \
@@ -723,7 +729,7 @@ weighted avg       0.97      0.97      0.97      3000
 Process finished with exit code 0
 
 ```
-## Visualizations
+### Visualizations
 
 ### Section - 2.1 Heatmap of the correlation
 #### Correlation Matrix Summary
@@ -773,21 +779,100 @@ Process finished with exit code 0
 #### Clustering for satisfaction level and last evaluation for employees who left
 ![Emp_Turnover_Figure_6.png](visualization/images/employee_turnover/Emp_Turnover_Figure_6.png)
 
-### Section 4. Smote - Before and After
+#### Section 4. Smote - Before and After
     After applying SMOTE, the number of samples for employees who left and those who stayed are approx balanced, enabling fairer model training
 ![Emp_Turnover_Figure_13.png](visualization/images/employee_turnover/Emp_Turnover_Figure_13.png)
 
-### Section 6 - ROC - Curve comparison with X train and y train [resampled]
+
+#### Section 6 - ROC - Curve comparison with X train and y train [resampled]
     The ROC AUC curve is to the top left corner, the better the model
     So, as per our graph - the better model is Random Forest which has the highest AUC value - 0.99564 for resampled and 0.99502 for raw data
 ![Emp_Turnover_Figure_21.png](visualization/images/employee_turnover/Emp_Turnover_Figure_21.png)
 #### ROC - Curve comparison with X train and y train 
 ![Emp_Turnover_Figure_23.png](visualization/images/employee_turnover/Emp_Turnover_Figure_22.png)
 
-### Section 7 - Zone category and its predicted employee count
+#### Section 7 - Zone category and its predicted employee count
+
 Risk Zone  Employee Count
 
-      High-Risk Zone (Red)             634
-       Medium-Risk Zone (Orange)       72
-    Low-Risk Zone (Yellow)             50
           Safe Zone (Green)            2244
+      High-Risk Zone (Red)             634
+ Medium-Risk Zone (Orange)             72
+    Low-Risk Zone (Yellow)             50
+
+## Perform data quality checks by checking for missing values, if any. - No missing values
+## Understand what factors contributed most to employee turnover at EDA.
+    ## Reasons behind employees leaving are influenced by satisfaction_level -> salary -> work_accident -> department
+### Perform clustering of employees who left based on their satisfaction and evaluation.
+        Cluster 0 (Low Satisfaction, High Evaluation) employees are at the highest risk—even if they perform well, they leave due to dissatisfaction.
+        Cluster 1 (High Satisfaction & Evaluation) might be leaving due to external offers or burnout.
+        Cluster 2 (Moderate Satisfaction & Evaluation) might indicate employees who were not particularly engaged.
+### Handle the left Class Imbalance using the SMOTE technique - Handled 
+    After applying SMOTE, the number of samples for employees who left and those who stayed are approx balanced, enabling fairer model training
+![Emp_Turnover_Figure_13.png](visualization/images/employee_turnover/Emp_Turnover_Figure_13.png)
+
+### Perform k-fold cross-validation model training and evaluate performance 
+Classification Report for Logistic Regression (5-Fold CV):
+              precision    recall  f1-score   support
+
+           0      0.816     0.797     0.807      9142
+           1      0.802     0.821     0.811      9142
+
+    accuracy                          0.809     18284
+   macro avg      0.809     0.809     0.809     18284
+weighted avg      0.809     0.809     0.809     18284
+
+Classification Report for Random Forest (5-Fold CV):
+              precision    recall  f1-score   support
+
+           0      0.976     0.994     0.985      9142
+           1      0.994     0.975     0.984      9142
+
+    accuracy                          0.985     18284
+   macro avg      0.985     0.985     0.985     18284
+weighted avg      0.985     0.985     0.985     18284
+
+Classification Report for Gradient Boosting (5-Fold CV):
+              precision    recall  f1-score   support
+
+           0      0.947     0.977     0.962      9142
+           1      0.976     0.945     0.960      9142
+
+    accuracy                          0.961     18284
+   macro avg      0.961     0.961     0.961     18284
+weighted avg      0.961     0.961     0.961     18284
+
+:small_blue_diamond: Logistic Regression
+Confusion Matrix:
+ [[1836  450]
+ [ 199  515]]
+Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.90      0.80      0.85      2286
+           1       0.53      0.72      0.61       714
+
+    accuracy                           0.78      3000
+   macro avg       0.72      0.76      0.73      3000
+weighted avg       0.81      0.78      0.79      3000
+
+
+### Identify the best model and justify the evaluation metrics used - Random Forest due to its high accuracy 
+
+Classification Report for Random Forest (5-Fold CV):
+              precision    recall  f1-score   support
+
+           0      0.976     0.994     0.985      9142
+           1      0.994     0.975     0.984      9142
+
+    accuracy                          0.985     18284
+   macro avg      0.985     0.985     0.985     18284
+weighted avg      0.985     0.985     0.985     18284
+
+### Suggest various retention strategies for targeted employees.
+
+## Employee engagement 
+## Frequent all hands meeting
+## Awards and promotions for high performers 
+## Frequent 1-1's
+
