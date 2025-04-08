@@ -475,8 +475,8 @@ if __name__ == "__main__":
         # print(rf_prob_df.columns)
 
         outcome_data_stayed_high = \
-        rf_prob_df[rf_prob_df['Actual'] == 0][rf_prob_df['Risk_Zone'] == 'High-Risk Zone (Red)'][
-            ['Employee_satisfaction_level', 'Employee_last_eval_level']]
+            rf_prob_df[rf_prob_df['Actual'] == 0][rf_prob_df['Risk_Zone'] == 'High-Risk Zone (Red)'][
+                ['Employee_satisfaction_level', 'Employee_last_eval_level']]
         outcome_data_stayed_high.head(2)
 
         ## Standardization using StandardScaler before K-Means Clustering

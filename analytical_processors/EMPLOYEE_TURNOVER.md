@@ -521,11 +521,9 @@ salary_medium            -0.847144       1.000000
 0                0.38             0.53           2
 1                0.80             0.86           1
 2                0.11             0.88           0
-2025-04-07 19:26:14.905 python[43501:14623866] +[IMKClient subclass]: chose IMKClient_Modern
-2025-04-07 19:26:14.905 python[43501:14623866] +[IMKInputSession subclass]: chose IMKInputSession_Modern
-employee_turnover.py:153: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
-  plt.legend()
-python3.9/site-packages/sklearn/base.py:474: FutureWarning: `BaseEstimator._validate_data` is deprecated in 1.6 and will be removed in 1.7. Use `sklearn.utils.validation.validate_data` instead. This function becomes public and is part of the scikit-learn developer API.
+2025-04-07 21:52:01.452 python[47656:14717144] +[IMKClient subclass]: chose IMKClient_Modern
+2025-04-07 21:52:01.452 python[47656:14717144] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+lib/python3.9/site-packages/sklearn/base.py:474: FutureWarning: `BaseEstimator._validate_data` is deprecated in 1.6 and will be removed in 1.7. Use `sklearn.utils.validation.validate_data` instead. This function becomes public and is part of the scikit-learn developer API.
   warnings.warn(
 Original Training Set Class Distribution: {0: np.int64(9142), 1: np.int64(2857)}
 After SMOTE Class Distribution: {0: np.int64(9142), 1: np.int64(9142)}
@@ -821,8 +819,8 @@ Index(['Employee_satisfaction_level', 'Employee_last_eval_level',
 10627                         0.98                      0.77           2
 2703                          0.76                      0.93           2
 6059                          0.70                      0.93           2
-employee_turnover.py:499: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
-  outcome_data_stayed_high = rf_prob_df[rf_prob_df['Actual'] == 0][rf_prob_df['Risk_Zone'] == 'High-Risk Zone (Red)'][['Employee_satisfaction_level', 'Employee_last_eval_level']]
+employee_turnover.py:478: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+  rf_prob_df[rf_prob_df['Actual'] == 0][rf_prob_df['Risk_Zone'] == 'High-Risk Zone (Red)'][
 ----
       Employee_satisfaction_level  Employee_last_eval_level  clus_label
 6184                         0.93                      0.70           2
