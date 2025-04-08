@@ -4,7 +4,7 @@ from analysis.data_analysis import group_data, group_data_by_time
 from visualization.visualize import bar_plot, line_plot
 from wrangling.insights import explain, group_by_features
 from wrangling.normalization import min_max_normalization
-from wrangling.prepare import fill_null, convert_data_type
+from wrangling.prepare import convert_data_type
 
 # Main Execution
 if __name__ == "__main__":

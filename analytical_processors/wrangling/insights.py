@@ -6,7 +6,7 @@ def explain(data):
     print(f'Row labels : \t{data.index}')
     print(f'Column names : \n{data.columns}')
     print(f'Data type : \n{data.dtypes}')
-    pd.set_option('display.max_columns',None)
+    pd.set_option('display.max_columns', None)
     print(f'Data info : \n')
     print(data.info())
     print(f'Describe data : \n{data.describe()}')
