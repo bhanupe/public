@@ -132,32 +132,15 @@ if __name__ == "__main__":
         f = plt.subplots(1, 1, figsize=(15, 6))
         sb.scatterplot(x=cluster_data.satisfaction_level, y=cluster_data.last_evaluation, hue=cluster_data.clus_label,
                        palette='rainbow_r')
+        plt.xlabel('Satisfaction Level')
+        plt.ylabel('Last Evaluation')
+        plt.title('K-Means Clustering of Employees Who Left')
         plt.show()
 
         ## 3.3 Inference from Clusters
         ###### Cluster 0 (Low Satisfaction, High Evaluation) employees are at the highest risk—even if they perform well, they leave due to dissatisfaction.
         ###### Cluster 1 (High Satisfaction & Evaluation) might be leaving due to external offers or burnout.
         ###### Cluster 2 (Moderate Satisfaction & Evaluation) might indicate employees who were not particularly engaged.
-
-        ## Chat GPT Version:
-        plt.figure(figsize=(15, 6))
-        plt.scatter(cluster_data.satisfaction_level, cluster_data.last_evaluation, c=cluster_data.clus_label,
-                    cmap='viridis', edgecolors='k', alpha=0.7)
-        plt.xlabel('Satisfaction Level')
-        plt.ylabel('Last Evaluation')
-        plt.title('Chat GPT Version: K-Means Clustering of Employees Who Left')
-        plt.legend()
-        plt.show()
-        plt.figure(figsize=(15, 6))
-        plt.scatter(cluster_data.satisfaction_level, cluster_data.last_evaluation, c=cluster_data.clus_label,
-                    cmap='viridis', edgecolors='k', alpha=0.7)
-        plt.scatter(kmm.cluster_centers_[:, 0], kmm.cluster_centers_[:, 1], s=300, c='red', marker='X',
-                    label="Centroids")
-        plt.xlabel('Satisfaction Level')
-        plt.ylabel('Last Evaluation')
-        plt.title('Chat GPT Version: K-Means Clustering of Employees Who Left')
-        plt.legend()
-        plt.show()
 
         # 4.1 - Pre-process the data by converting categorical columns to numerical columns - Done Line #- 39
         # 4.2 -n Do the stratified split of the dataset to train and test in the ratio 80:20 with random_state=123
