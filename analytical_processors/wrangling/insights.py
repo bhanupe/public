@@ -1,20 +1,34 @@
 import pandas as pd
 
 
+def printline():
+    print('-----------------------------------------------------------------------------------------------------------')
+
+
 def explain(data):
-    print(f'Shape : \t{data.shape}')
-    print(f'Row labels : \t{data.index}')
-    print(f'Column names : \n{data.columns}')
-    print(f'Data type : \n{data.dtypes}')
     pd.set_option('display.max_columns', None)
-    print(f'Data info : \n')
-    print(data.info())
+    # Disable word wrapping when printing DataFrames
+    pd.set_option('display.max_colwidth', None)
+    # Adjust the display width to accommodate all columns
+    pd.set_option('display.width', 500)  # You can adjust the value as needed
+    printline()
+    print(f'Shape : \n{data.shape}')
+    printline()
+    print(f'Row labels : \n{data.index}')
+    printline()
+    print(f'Column names : \n{data.columns}')
+    printline()
+    print(f'Data type : \n{data.dtypes}')
+    printline()
+    print(f'Data info : \n{data.info()}')
+    printline()
     print(f'Describe data : \n{data.describe()}')
+    printline()
     # this returns if there is at least one null value in any of the column data
-    print(data.isna().sum(axis=0))
+    print(f'at least one null value: \n{data.isna().sum(axis=0)}')
+    printline()
     missing_val = data.isna().sum(axis=0)
-    print('column which has null is')
-    print(missing_val[missing_val == 1])
+    print(f'column which has null is: \n{missing_val[missing_val == 1]}')
 
 
 def group_by_features(data):
