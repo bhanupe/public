@@ -29,6 +29,8 @@ def explain(data):
     printline()
     missing_val = data.isna().sum(axis=0)
     print(f'Column which has null is: \n{missing_val[missing_val == 1]}')
+    printline()
+    print(data.head(5))
 
 
 def group_by_features(data):
