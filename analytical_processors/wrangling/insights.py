@@ -25,10 +25,10 @@ def explain(data):
     print(f'Describe data : \n{data.describe()}')
     printline()
     # this returns if there is at least one null value in any of the column data
-    print(f'at least one null value: \n{data.isna().sum(axis=0)}')
+    print(f'At least one null value: \n{data.isna().sum(axis=0)}')
     printline()
     missing_val = data.isna().sum(axis=0)
-    print(f'column which has null is: \n{missing_val[missing_val == 1]}')
+    print(f'Column which has null is: \n{missing_val[missing_val == 1]}')
 
 
 def group_by_features(data):
