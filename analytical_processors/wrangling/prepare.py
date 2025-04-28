@@ -1,6 +1,6 @@
 import pandas as pd
 from scipy import stats
-
+import numpy as np
 
 def fill_null(data, column, value):
     return data.fillna({column: value}, inplace=True)
@@ -35,3 +35,10 @@ def add_zscores(data):
     z_scores = data.select_dtypes(include=['number']).apply(lambda x: stats.zscore(x))
     data_with_zscores = data.join(z_scores.add_suffix('_zscore'))
     return z_scores, data_with_zscores
+
+def add_value_from_natural_log(data):
+    # Example natural logarithm value
+    ln_value = 10.9861
+    # Calculate the original value using exp()
+    original_value = np.exp(ln_value)
+    print("Original value:", original_value)
