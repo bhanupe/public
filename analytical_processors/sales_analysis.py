@@ -1,4 +1,5 @@
 import pandas as pd
+import traceback
 
 from analysis.data_analysis import group_data, group_data_by_time
 from visualization.visualize import bar_plot, line_plot
@@ -21,7 +22,8 @@ if __name__ == "__main__":
         min_max_normalization(data, 'Sales', 'sales_normalization')
         print('after adding sales_normalization')
         print(data[['Unit', 'Sales', 'sales_normalization']].agg(['min', 'max']))
-        group_by_features(data)
+        group_by_features(data, ['State', 'Time', 'Group'], 'Sales', {'Sales': 'sum', 'Unit': 'sum'})
+        group_by_features(data, ["State", "Time"], 'Sales')
         grouped_data_by_state = group_data(data, 'State', 'Sales')
         print(f"Maximum Sales in State={grouped_data_by_state.idxmax()}")
         print(f"Minimum Sales in State={grouped_data_by_state.idxmin()}")
@@ -55,4 +57,4 @@ if __name__ == "__main__":
         sorted_data = data.sort_values(['Time'], ascending=False)
         line_plot(sorted_data.groupby('Time')['Sales'].sum().reset_index())
     except Exception as e:
-        print(f"❌ Fatal error: {e}")
+        print(f"error={e}, traceback={traceback.format_exc()}, line_no={e.__traceback__.tb_lineno}")
