@@ -117,3 +117,12 @@ def bivariate_analysis(data, target):
             sb.boxplot(x=target, y=column, data=data)
             plt.title(f'{column} vs {target}')
             save_show(plt, f'ban{column}_{__name__}')
+
+
+def box_plot(data):
+    plt.figure(figsize=(10, 6))
+    sb.boxplot(data=data)
+    plt.title('Box Plot of Z-Scores')
+    plt.xlabel('Columns')
+    plt.ylabel('Z-Score')
+    save_show(plt, f'zsbp{__name__}')

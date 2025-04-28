@@ -84,6 +84,17 @@ def explain(data):
     print(f'Column which has null is: \n{missing_val[missing_val == 1]}')
 
     printline()
+    # Find duplicates based on all columns
+    duplicates = data.duplicated()
+    # Display the boolean Series
+    print(f'Duplicate data: \n{duplicates}')
+
+    printline()
+    # Display duplicate rows
+    duplicate_rows = data[duplicates]
+    print(f'Duplicate rows: \n{duplicate_rows}')
+
+    printline()
     print(data.head(5))
 
 
