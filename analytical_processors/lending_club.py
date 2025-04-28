@@ -2,7 +2,7 @@ import pandas as pd
 # Set the display.max_columns option to None
 from visualization.visualize import heat_map_missing, univariate_analysis, bivariate_analysis, \
     multivariate_analysis, box_plot, save_show
-from wrangling.insights import explain
+from wrangling.insights import explain, printline
 from wrangling.prepare import encode, add_zscores
 
 # Imports for Deep Learning
@@ -12,7 +12,9 @@ from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.optimizers import Adam
-from sklearn.metrics import classification_report, roc_auc_score
+from tensorflow.keras.models import load_model
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+import joblib
 
 # Calculate class weights manually
 from sklearn.utils import class_weight
@@ -21,21 +23,23 @@ from sklearn.utils import class_weight
 import matplotlib.pyplot as plt
 from xgboost import XGBClassifier, plot_importance
 
+from pydantic import BaseModel
+from fastapi import FastAPI
 
 data = pd.read_csv("lending_club/data/loan_data.csv")
 explain(data)
-heat_map_missing(data)
+heat_map_missing(data, 'ld')
 
-data_encoded = encode(data, int)
+data_encoded = encode(data, int, 'lending_club/data/data_encoded.csv')
 explain(data_encoded)
-heat_map_missing(data_encoded)
+heat_map_missing(data_encoded, 'lde')
 
 univariate_analysis(data)
 
-bivariate_analysis(data, 'not.fully.paid')
+bivariate_analysis(data, 'not.fully.paid', 'lde')
 
 numeric_data = data.drop(columns='purpose')
-multivariate_analysis(numeric_data, 'not.fully.paid')
+multivariate_analysis(numeric_data, 'not.fully.paid', 'lde')
 # Observation                                                   | Meaning
 # Some features are strongly related (e.g., fico vs int.rate)   | Multicollinearity needs careful handling
 # Most feature pairs are not perfectly separable                | Need models that can handle messy data
@@ -46,8 +50,7 @@ multivariate_analysis(numeric_data, 'not.fully.paid')
 z_scores, data_with_zscores = add_zscores(data)
 explain(data_with_zscores)
 
-box_plot(z_scores)
-
+box_plot(z_scores, 'lde')
 
 # Best Modeling Techniques to Use
 # Technique                             | Why Suitable for This Data
@@ -94,7 +97,7 @@ box_plot(z_scores)
 # 3     | Monitor validation AUC, not just accuracy (because of imbalance)
 # 4     | Tune layers/neurons if needed
 # 5     | (Optional) Try XGBoost as a comparison
-
+#
 ###########################################  Full Keras Model Code  ###########################################
 # Step 1: Prepare Features (X) and Target (y)
 X = data_encoded.drop('not.fully.paid', axis=1)  # Drop target column from features # Input features
@@ -169,11 +172,92 @@ plt.ylabel('Loss')
 plt.legend()
 save_show(plt, f'keras_loss_{__name__}')
 
+# Save the full model (architecture + weights + optimizer state)
+model.save('loan_default_keras_model.h5')
+print("Model saved successfully to loan_default_keras_model.h5!")
 
+# Save the scaler
+joblib.dump(scaler, 'scaler.pkl')
+
+# Later load it
+scaler = joblib.load('scaler.pkl')
+
+# Classification Report:
+#               precision    recall  f1-score   support
+#
+#            0       0.89      0.71      0.79      1611
+#            1       0.26      0.52      0.34       305
+#
+#     accuracy                           0.68      1916
+#    macro avg       0.57      0.62      0.57      1916
+# weighted avg       0.79      0.68      0.72      1916
+#
+# Test AUC Score: 0.6822
+# Imbalance Ratio: 5.24
+# [0]	validation_0-auc:0.63817
+
+printline()
+printline()
+###########################################  Keras Model Use  ###########################################
+# Load the model
+model = load_model('loan_default_keras_model.h5')
+scaler = joblib.load('scaler.pkl')
+print("Model and Scalar loaded successfully!")
+
+data_new = pd.read_csv("lending_club/data/loan_data_new.csv")
+explain(data_new)
+heat_map_missing(data_new, 'ldn')
+
+data_new_encoded = encode(data_new, int, 'lending_club/data/data_new_encoded.csv')
+explain(data_new_encoded)
+heat_map_missing(data_new_encoded, 'ldne')
+
+univariate_analysis(data_new)
+
+bivariate_analysis(data_new, 'not.fully.paid', 'ldne')
+
+numeric_data_new = data_new.drop(columns='purpose')
+multivariate_analysis(numeric_data_new, 'not.fully.paid', 'ldne')
+# Observation                                                   | Meaning
+# Some features are strongly related (e.g., fico vs int.rate)   | Multicollinearity needs careful handling
+# Most feature pairs are not perfectly separable                | Need models that can handle messy data
+# Distributions are not normal, some right-skewed               | Careful feature scaling / transformation needed
+# Data is imbalanced (very few defaulters)                      | Need imbalance handling during training
+# Relationship between features and target is non-linear        | Not simple straight line separations
+
+z_scores, data_new_with_zscores = add_zscores(data_new)
+explain(data_new_with_zscores)
+
+box_plot(z_scores, 'ldne')
+printline()
+# Step 1: Prepare Features (X) and Target (y)
+X_new = data_new_encoded.drop('not.fully.paid', axis=1)  # Drop target column from features # Input features
+y_new = data_new_encoded['not.fully.paid']
+
+# Scale features
+new_data_scaled = scaler.transform(X_new)
+
+# Now you can use it to predict
+predictions = model.predict(new_data_scaled)  # (X_new_scaled = new customer data)
+
+# Convert probabilities to 0 or 1
+predicted_classes = (predictions > 0.5).astype(int)
+
+# Create a DataFrame for easy visualization
+result_df = pd.DataFrame({
+    'default_probability_percent': predictions.flatten() * 100,
+    'predicted_class': predicted_classes.flatten()
+})
+print(result_df)  # See first 10 predictions
+
+printline()
+# GENERATE CLASSIFICATION REPORT AND AUC SCORE
+printline()
+printline()
 ###########################################  Full XGBoost Model Code  ###########################################
 # Step 3: Prepare Features (X) and Target (y)
 X = data_encoded.drop('not.fully.paid', axis=1)  # Input features
-y = data_encoded['not.fully.paid']               # Target
+y = data_encoded['not.fully.paid']  # Target
 
 # Step 4: Scale Numerical Features (Optional for XGBoost)
 # Note: XGBoost **does not require scaling**, but let's keep it for comparison
@@ -204,7 +288,7 @@ model = XGBClassifier(
 model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=100)
 
 # Step 9: Evaluate Model
-y_pred_probs = model.predict_proba(X_test)[:, 1]   # Predicted probabilities
+y_pred_probs = model.predict_proba(X_test)[:, 1]  # Predicted probabilities
 y_pred_classes = (y_pred_probs > 0.5).astype(int)  # Convert to class labels
 
 # Print Classification Report
@@ -220,3 +304,77 @@ print(f"Test AUC Score: {auc_score:.4f}")
 plot_importance(model, max_num_features=10)
 plt.title('Top 10 Important Features')
 save_show(plt, f'xgboost_tif_{__name__}')
+printline()
+printline()
+# Classification Report:
+#               precision    recall  f1-score   support
+#
+#            0       0.87      0.74      0.80      1611
+#            1       0.24      0.42      0.30       305
+#
+#     accuracy                           0.69      1916
+#    macro avg       0.55      0.58      0.55      1916
+# weighted avg       0.77      0.69      0.72      1916
+#
+# Test AUC Score: 0.6253
+#
+# # Define input structure
+# class LoanData(BaseModel):
+#     credit_policy: int
+#     purpose: str
+#     int_rate: float
+#     installment: float
+#     log_annual_inc: float
+#     dti: float
+#     fico: float
+#     days_with_cr_line: float
+#     revol_bal: float
+#     revol_util: float
+#     inq_last_6mths: int
+#     delinq_2yrs: int
+#     pub_rec: int
+#     not_fully_paid: int
+#
+#
+# # Load the model and scaler
+# model = load_model('loan_default_keras_model.h5')
+# scaler = joblib.load('scaler.pkl')
+#
+# # Create FastAPI app
+# app = FastAPI()
+#
+#
+# # Prediction endpoint
+# @app.post("/predict")
+# def predict(loan_data: LoanData):
+#     return loan_data
+#     # Convert input data to array
+#     # input_data = np.array([[
+#     #     data.fico,
+#     #     data.int_rate,
+#     #     data.installment,
+#     #     data.log_annual_inc,
+#     #     data.dti,
+#     #     data.days_with_cr_line,
+#     #     data.revol_bal,
+#     #     data.revol_util,
+#     #     data.inq_last_6mths,
+#     #     data.delinq_2yrs,
+#     #     data.pub_rec
+#     # ]])
+#
+#     # # Scale input
+#     # input_scaled = scaler.transform(input_data)
+#     #
+#     # # Predict
+#     # prediction = model.predict(input_scaled)
+#     # predicted_class = int((prediction > 0.5).astype(int)[0][0])
+#     #
+#     # status = 'Good'
+#     # if predicted_class == 0:
+#     #     status = "Bad"
+#     #
+#     # return {
+#     #     "default_probability_percent": float(prediction[0][0]) * 100,
+#     #     "predicted_class": status
+#     # }

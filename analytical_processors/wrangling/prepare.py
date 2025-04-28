@@ -12,9 +12,9 @@ def convert_data_type(data, column, dest_type):
         return data
 
 
-def encode(data, datatype):
+def encode(data, datatype, outputfile):
     data_encoded = pd.get_dummies(data, dtype=datatype)
-    data_encoded.to_csv('../data/data_encoded.csv', index=False)
+    data_encoded.to_csv(f'{outputfile}', index=False)
     return data_encoded
 
 
