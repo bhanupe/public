@@ -1,9 +1,9 @@
 import pandas as pd
 # Set the display.max_columns option to None
-from analytical_processors.visualization.visualize import heat_map_missing, univariate_analysis, bivariate_analysis, \
+from visualization.visualize import heat_map_missing, univariate_analysis, bivariate_analysis, \
     multivariate_analysis, box_plot
-from analytical_processors.wrangling.insights import explain
-from analytical_processors.wrangling.prepare import encode, add_zscores
+from wrangling.insights import explain
+from wrangling.prepare import encode, add_zscores
 
 data = pd.read_csv("lending_club/data/loan_data.csv")
 explain(data)
