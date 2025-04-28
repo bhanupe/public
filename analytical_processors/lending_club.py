@@ -5,7 +5,7 @@ from analytical_processors.visualization.visualize import heat_map_missing, univ
 from analytical_processors.wrangling.insights import explain
 from analytical_processors.wrangling.prepare import encode, add_zscores
 
-data = pd.read_csv("../data/loan_data.csv")
+data = pd.read_csv("lending_club/data/loan_data.csv")
 explain(data)
 heat_map_missing(data)
 
