@@ -1,6 +1,11 @@
+setuptools==60.2.0
+wheel==0.37.1
 pandas==2.2.3
 seaborn==0.13.2
 scikit-learn==1.6.1
 numpy==1.26.4
 imblearn==0.0
 tensorflow==2.19.0
+xgboost==3.0.0
+pydantic==2.11.3
+fastapi==0.115.12
