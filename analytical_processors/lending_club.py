@@ -252,6 +252,13 @@ print(result_df)  # See first 10 predictions
 
 printline()
 # GENERATE CLASSIFICATION REPORT AND AUC SCORE
+# Print Classification Report
+print("\nClassification Report data_new:")
+print(classification_report(y_new, predicted_classes))
+
+# Calculate AUC Score
+auc_score = roc_auc_score(y_new, predicted_classes)
+print(f"Test AUC Score data_new: {auc_score:.4f}")
 printline()
 printline()
 ###########################################  Full XGBoost Model Code  ###########################################
