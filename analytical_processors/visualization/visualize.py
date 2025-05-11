@@ -2,11 +2,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sb
 
+from analytical_processors.lending_club.utils.utilities import get_datetime, create_folder
+
 show = True
+
+folder = get_datetime()
+create_folder(folder)
 
 
 def save_show(plot, name, identifier=""):
-    plot.savefig(f'{name}_{identifier}.png')
+    plot.savefig(f'{folder}/{name}_{identifier}.png')
     if show:
         plot.show()
 
