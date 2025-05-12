@@ -1,9 +1,11 @@
 import pandas as pd
+
+from feature_engng.feature_eng import drop_highly_correlated_features
 # Set the display.max_columns option to None
 from visualization.visualize import heat_map_missing, univariate_analysis, bivariate_analysis, \
-    multivariate_analysis, box_plot, save_show
+    multivariate_analysis, box_plot, save_show, data_correlation_plot
 from wrangling.insights import explain, printline
-from wrangling.prepare import encode, add_zscores
+from wrangling.prepare import encode, add_zscores, check_class_imbalance
 
 # Imports for Deep Learning
 import numpy as np
@@ -29,6 +31,8 @@ heat_map_missing(data, 'ld')
 
 data_encoded = encode(data, int, 'lending_club/data/data_encoded.csv')
 explain(data_encoded)
+check_class_imbalance(data, "not.fully.paid", 0.10)
+
 heat_map_missing(data_encoded, 'lde')
 
 univariate_analysis(data)
@@ -46,7 +50,6 @@ multivariate_analysis(numeric_data, 'not.fully.paid', 'lde')
 
 z_scores, data_with_zscores = add_zscores(data)
 explain(data_with_zscores)
-
 box_plot(z_scores, 'lde')
 
 # Best Modeling Techniques to Use
@@ -104,6 +107,8 @@ y = data_encoded['not.fully.paid']  # Target
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
+print(X_scaled)
+
 # Step 3: Train/Test Split
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
@@ -111,6 +116,12 @@ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, 
 weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
 class_weights = {0: weights[0], 1: weights[1]}
 print(f"Class Weights: {class_weights}")
+
+# Step 4.1 - Feature Engineering - Drop highly correlated features
+X_scaled_df = pd.DataFrame(X_scaled,columns=X.columns)
+data_correlation_plot(X_scaled_df,"")
+loan_data_reduced = drop_highly_correlated_features(X_scaled_df, threshold=0.85)
+data_correlation_plot(loan_data_reduced,"")
 
 # Step 5: Build Deep Learning Model
 model = Sequential()

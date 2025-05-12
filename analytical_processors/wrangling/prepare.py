@@ -45,3 +45,24 @@ def add_value_from_natural_log(data):
     # Calculate the original value using exp()
     original_value = np.exp(ln_value)
     print("Original value:", original_value)
+
+
+def check_class_imbalance(df, target_column, imbalance_threshold=0.10):
+
+    target_counts = df[target_column].value_counts()
+    total = target_counts.sum()
+    percentages = (target_counts / total) * 100
+
+    print("\nClass Distribution:")
+    for label, count in target_counts.items():
+        print(f"Class {label}: {count} samples ({percentages[label]:.2f}%)")
+
+    # Get majority and minority percentages
+    majority_class_percentage = max(percentages)
+    minority_class_percentage = min(percentages)
+
+    # Check imbalance
+    if abs(majority_class_percentage - minority_class_percentage) > (imbalance_threshold * 100):
+        print("\n🚨 Data is IMBALANCED.")
+    else:
+        print("\n✅ Data is BALANCED.")

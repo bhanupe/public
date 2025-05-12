@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sb
 
-from analytical_processors.lending_club.utils.utilities import get_datetime, create_folder
+from lending_club.utils.utilities import get_datetime, create_folder
 
 show = True
 
@@ -43,10 +43,7 @@ def line_plot(grouped_data, identifier=""):
 
 
 def multivariate_analysis(data, target, identifier=""):
-    plt.figure(figsize=(20, 10))
-    sb.heatmap(data.corr(), annot=True, cmap='BuGn', fmt='.2g', linewidths='2')
-    plt.title('Correlation matrix')
-    save_show(plt, f'cm{__name__}', identifier)
+    data_correlation_plot(data,"")
 
     # Optional: Pairplot
     sb.pairplot(data, hue=target)
@@ -131,3 +128,9 @@ def box_plot(data, identifier=""):
     plt.xlabel('Columns')
     plt.ylabel('Z-Score')
     save_show(plt, f'zsbp{__name__}', identifier)
+
+def data_correlation_plot(data,identifier=""):
+    plt.figure(figsize=(20, 10))
+    sb.heatmap(data.corr(), annot=True, cmap='BuGn', fmt='.2g', linewidths='2')
+    plt.title('Correlation matrix')
+    save_show(plt, f'cm{__name__}', identifier)
