@@ -23,9 +23,6 @@ from sklearn.utils import class_weight
 import matplotlib.pyplot as plt
 from xgboost import XGBClassifier, plot_importance
 
-from pydantic import BaseModel
-from fastapi import FastAPI
-
 data = pd.read_csv("lending_club/data/loan_data.csv")
 explain(data)
 heat_map_missing(data, 'ld')
@@ -313,6 +310,7 @@ plt.title('Top 10 Important Features')
 save_show(plt, f'xgboost_tif_{__name__}')
 printline()
 printline()
+
 # Classification Report:
 #               precision    recall  f1-score   support
 #
@@ -324,64 +322,3 @@ printline()
 # weighted avg       0.77      0.69      0.72      1916
 #
 # Test AUC Score: 0.6253
-#
-# # Define input structure
-# class LoanData(BaseModel):
-#     credit_policy: int
-#     purpose: str
-#     int_rate: float
-#     installment: float
-#     log_annual_inc: float
-#     dti: float
-#     fico: float
-#     days_with_cr_line: float
-#     revol_bal: float
-#     revol_util: float
-#     inq_last_6mths: int
-#     delinq_2yrs: int
-#     pub_rec: int
-#     not_fully_paid: int
-#
-#
-# # Load the model and scaler
-# model = load_model('loan_default_keras_model.h5')
-# scaler = joblib.load('scaler.pkl')
-#
-# # Create FastAPI app
-# app = FastAPI()
-#
-#
-# # Prediction endpoint
-# @app.post("/predict")
-# def predict(loan_data: LoanData):
-#     return loan_data
-#     # Convert input data to array
-#     # input_data = np.array([[
-#     #     data.fico,
-#     #     data.int_rate,
-#     #     data.installment,
-#     #     data.log_annual_inc,
-#     #     data.dti,
-#     #     data.days_with_cr_line,
-#     #     data.revol_bal,
-#     #     data.revol_util,
-#     #     data.inq_last_6mths,
-#     #     data.delinq_2yrs,
-#     #     data.pub_rec
-#     # ]])
-#
-#     # # Scale input
-#     # input_scaled = scaler.transform(input_data)
-#     #
-#     # # Predict
-#     # prediction = model.predict(input_scaled)
-#     # predicted_class = int((prediction > 0.5).astype(int)[0][0])
-#     #
-#     # status = 'Good'
-#     # if predicted_class == 0:
-#     #     status = "Bad"
-#     #
-#     # return {
-#     #     "default_probability_percent": float(prediction[0][0]) * 100,
-#     #     "predicted_class": status
-#     # }

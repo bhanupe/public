@@ -2,6 +2,7 @@ import pandas as pd
 from scipy import stats
 import numpy as np
 
+
 def fill_null(data, column, value):
     return data.fillna({column: value}, inplace=True)
 
@@ -12,9 +13,10 @@ def convert_data_type(data, column, dest_type):
         return data
 
 
-def encode(data, datatype, outputfile):
+def encode(data, datatype, outputfile=None):
     data_encoded = pd.get_dummies(data, dtype=datatype)
-    data_encoded.to_csv(f'{outputfile}', index=False)
+    if outputfile:
+        data_encoded.to_csv(f'{outputfile}', index=False)
     return data_encoded
 
 
@@ -35,6 +37,7 @@ def add_zscores(data):
     z_scores = data.select_dtypes(include=['number']).apply(lambda x: stats.zscore(x))
     data_with_zscores = data.join(z_scores.add_suffix('_zscore'))
     return z_scores, data_with_zscores
+
 
 def add_value_from_natural_log(data):
     # Example natural logarithm value
