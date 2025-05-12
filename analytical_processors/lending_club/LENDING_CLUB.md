@@ -1,6 +1,92 @@
-# Output
+## Run Predictions API
 ```commandline
-/opt/homebrew/Cellar/python@3.12/3.12.9/venv/bin/python public/analytical_processors/lending_club.py
+$ cd analytical_processors/fastapi
+$ python3 lending_club_predictions.py
+```
+
+```commandline
+curl --location --request POST 'http://127.0.0.1:5000/predict' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "credit.policy": [
+        1,1,1,1,1,1,0
+    ],
+    "purpose": [
+        "all_other","credit_card","debt_consolidation","educational","home_improvement","major_purchase","small_business"
+    ],
+    "int.rate": [
+        0.12,0.11,0.13,0.14,0.10,0.09,0.15
+    ],
+    "installment": [
+        278.00,890.00,234.43,234.23,221.55,454.99,223.90
+    ],
+    "log.annual.inc": [
+        11.08,12.09,13.45,12.43,13.56,9.23,14.8
+    ],
+    "dti": [
+        14.49,12.09,13.45,12.43,13.56,9.23,14.8
+    ],
+    "fico": [
+        720,800,790,678,780,770,678
+    ],
+    "days.with.cr.line": [
+        3260,3432,4332,6765,2334,6677,4556
+    ],
+    "revol.bal": [
+        43623,89089,89878,56547,34544,76556,100000
+    ],
+    "revol.util": [
+        86.7,76.7,90.7,89.7,66.7,76.7,96.7
+    ],
+    "inq.last.6mths": [
+        0,1,0,2,4,1,2
+    ],
+    "delinq.2yrs": [
+        1,0,0,0,0,0,1
+    ],
+    "pub.rec": [
+        0,0,1,0,0,0,0
+    ],
+    "not.fully.paid": [
+        0,0,0,0,0,0,1
+    ]
+}'
+
+Response
+[
+    {
+        "default_probability_percent": 48.309627533,
+        "predicted_class": 0
+    },
+    {
+        "default_probability_percent": 53.461856842,
+        "predicted_class": 1
+    },
+    {
+        "default_probability_percent": 12.5070114136,
+        "predicted_class": 0
+    },
+    {
+        "default_probability_percent": 55.815612793,
+        "predicted_class": 1
+    },
+    {
+        "default_probability_percent": 27.3426151276,
+        "predicted_class": 0
+    },
+    {
+        "default_probability_percent": 62.6190261841,
+        "predicted_class": 1
+    },
+    {
+        "default_probability_percent": 81.0511932373,
+        "predicted_class": 1
+    }
+]
+```
+## EDA, Model Training & Development
+```commandline
+/opt/homebrew/Cellar/python@3.12/3.12.9/venv/bin/python PycharmProjects/public/analytical_processors/lending_club.py
 -----------------------------------------------------------------------------------------------------------
 Shape : 
 (9578, 14)
@@ -273,6 +359,12 @@ Index: []
 2              1    0.1357       366.86       10.373491  11.63   682        4710.000000       3511        25.6               1            0        0               0                  0                    0                           1                    0                         0                       0                       0
 3              1    0.1008       162.34       11.350407   8.10   712        2699.958333      33667        73.2               1            0        0               0                  0                    0                           1                    0                         0                       0                       0
 4              1    0.1426       102.92       11.299732  14.97   667        4066.000000       4740        39.5               0            1        0               0                  0                    1                           0                    0                         0                       0                       0
+
+Class Distribution:
+Class 0: 8045 samples (83.99%)
+Class 1: 1533 samples (16.01%)
+
+🚨 Data is IMBALANCED.
 -----------------------------------------------------------------------------------------------------------
 Shape : 
 (9578, 27)
@@ -449,126 +541,141 @@ Index: []
 2              1  debt_consolidation    0.1357       366.86       10.373491  11.63   682        4710.000000       3511        25.6               1            0        0               0              0.492222         0.486484            0.230708              -0.908659   -0.141885    -0.759742                  0.059770         -0.397073          -0.730683              -0.262470           -0.299730       -0.237003              -0.436524
 3              1  debt_consolidation    0.1008       162.34       11.350407   8.10   712        2699.958333      33667        73.2               1            0        0               0              0.492222        -0.813544           -0.757022               0.680388   -0.654697     0.030385                 -0.745277          0.496321           0.909966              -0.262470           -0.299730       -0.237003              -0.436524
 4              1         credit_card    0.1426       102.92       11.299732  14.97   667        4066.000000       4740        39.5               0            1        0               0              0.492222         0.743509           -1.043992               0.597961    0.343326    -1.154806                 -0.198161         -0.360663          -0.251586              -0.716989            1.531147       -0.237003              -0.436524
+[[ 0.49222226 -0.13931753  2.46309947 ... -0.2651173  -0.21864717
+  -0.26285458]
+ [ 0.49222226 -0.57886837 -0.43885443 ... -0.2651173  -0.21864717
+  -0.26285458]
+ [ 0.49222226  0.48648368  0.23070836 ... -0.2651173  -0.21864717
+  -0.26285458]
+ ...
+ [-2.03160257 -0.57886837 -1.06867038 ... -0.2651173  -0.21864717
+  -0.26285458]
+ [-2.03160257  1.39166043  0.1569135  ...  3.77191529 -0.21864717
+  -0.26285458]
+ [-2.03160257  0.61685894  2.58060136 ... -0.2651173  -0.21864717
+  -0.26285458]]
 Class Weights: {0: 0.5954305253341623, 1: 3.1197068403908794}
+Columns to drop (correlation > 0.85): []
 /opt/homebrew/Cellar/python@3.12/3.12.9/venv/lib/python3.12/site-packages/keras/src/layers/core/dense.py:87: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
   super().__init__(activity_regularizer=activity_regularizer, **kwargs)
 Epoch 1/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 1s 749us/step - accuracy: 0.5113 - loss: 0.7273 - val_accuracy: 0.6493 - val_loss: 0.6529
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 740us/step - accuracy: 0.5313 - loss: 0.7077 - val_accuracy: 0.6049 - val_loss: 0.6592
 Epoch 2/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 505us/step - accuracy: 0.6046 - loss: 0.6718 - val_accuracy: 0.6649 - val_loss: 0.6345
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 484us/step - accuracy: 0.5958 - loss: 0.6665 - val_accuracy: 0.6519 - val_loss: 0.6326
 Epoch 3/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 468us/step - accuracy: 0.6274 - loss: 0.6542 - val_accuracy: 0.6795 - val_loss: 0.6338
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 472us/step - accuracy: 0.6253 - loss: 0.6423 - val_accuracy: 0.6759 - val_loss: 0.6217
 Epoch 4/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 507us/step - accuracy: 0.6541 - loss: 0.6341 - val_accuracy: 0.5934 - val_loss: 0.6626
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 500us/step - accuracy: 0.6216 - loss: 0.6443 - val_accuracy: 0.6785 - val_loss: 0.6156
 Epoch 5/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 474us/step - accuracy: 0.5933 - loss: 0.6369 - val_accuracy: 0.6456 - val_loss: 0.6267
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 472us/step - accuracy: 0.6266 - loss: 0.6517 - val_accuracy: 0.6435 - val_loss: 0.6267
 Epoch 6/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 505us/step - accuracy: 0.5993 - loss: 0.6507 - val_accuracy: 0.6613 - val_loss: 0.6328
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 510us/step - accuracy: 0.6122 - loss: 0.6463 - val_accuracy: 0.6665 - val_loss: 0.6155
 Epoch 7/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 465us/step - accuracy: 0.6365 - loss: 0.6366 - val_accuracy: 0.6910 - val_loss: 0.6157
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 466us/step - accuracy: 0.6211 - loss: 0.6439 - val_accuracy: 0.6592 - val_loss: 0.6248
 Epoch 8/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 498us/step - accuracy: 0.6302 - loss: 0.6438 - val_accuracy: 0.6367 - val_loss: 0.6332
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 479us/step - accuracy: 0.6186 - loss: 0.6463 - val_accuracy: 0.6597 - val_loss: 0.6191
 Epoch 9/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 457us/step - accuracy: 0.6209 - loss: 0.6384 - val_accuracy: 0.6394 - val_loss: 0.6316
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 458us/step - accuracy: 0.6320 - loss: 0.6332 - val_accuracy: 0.6320 - val_loss: 0.6310
 Epoch 10/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 489us/step - accuracy: 0.6376 - loss: 0.6303 - val_accuracy: 0.6566 - val_loss: 0.6307
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 483us/step - accuracy: 0.5986 - loss: 0.6404 - val_accuracy: 0.6608 - val_loss: 0.6117
 Epoch 11/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 460us/step - accuracy: 0.6363 - loss: 0.6213 - val_accuracy: 0.6451 - val_loss: 0.6367
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 466us/step - accuracy: 0.6271 - loss: 0.6404 - val_accuracy: 0.6420 - val_loss: 0.6290
 Epoch 12/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 498us/step - accuracy: 0.6256 - loss: 0.6242 - val_accuracy: 0.6503 - val_loss: 0.6287
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 489us/step - accuracy: 0.6183 - loss: 0.6233 - val_accuracy: 0.6503 - val_loss: 0.6185
 Epoch 13/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 489us/step - accuracy: 0.6155 - loss: 0.6337 - val_accuracy: 0.6696 - val_loss: 0.6243
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 488us/step - accuracy: 0.6146 - loss: 0.6278 - val_accuracy: 0.6884 - val_loss: 0.6032
 Epoch 14/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 501us/step - accuracy: 0.6380 - loss: 0.6223 - val_accuracy: 0.6775 - val_loss: 0.6193
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 496us/step - accuracy: 0.6144 - loss: 0.6451 - val_accuracy: 0.6701 - val_loss: 0.6198
 Epoch 15/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 480us/step - accuracy: 0.6516 - loss: 0.6234 - val_accuracy: 0.6420 - val_loss: 0.6414
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 462us/step - accuracy: 0.6188 - loss: 0.6333 - val_accuracy: 0.6733 - val_loss: 0.6137
 Epoch 16/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 476us/step - accuracy: 0.6258 - loss: 0.6346 - val_accuracy: 0.6696 - val_loss: 0.6352
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 490us/step - accuracy: 0.6439 - loss: 0.6171 - val_accuracy: 0.6362 - val_loss: 0.6419
 Epoch 17/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 495us/step - accuracy: 0.6227 - loss: 0.6316 - val_accuracy: 0.6696 - val_loss: 0.6242
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 461us/step - accuracy: 0.6061 - loss: 0.6290 - val_accuracy: 0.6185 - val_loss: 0.6535
 Epoch 18/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 469us/step - accuracy: 0.6384 - loss: 0.6268 - val_accuracy: 0.6775 - val_loss: 0.6080
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 484us/step - accuracy: 0.6278 - loss: 0.6174 - val_accuracy: 0.6477 - val_loss: 0.6364
 Epoch 19/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 500us/step - accuracy: 0.6380 - loss: 0.6220 - val_accuracy: 0.6660 - val_loss: 0.6191
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 462us/step - accuracy: 0.6264 - loss: 0.6328 - val_accuracy: 0.6858 - val_loss: 0.5998
 Epoch 20/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 485us/step - accuracy: 0.6309 - loss: 0.6203 - val_accuracy: 0.6816 - val_loss: 0.6086
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 483us/step - accuracy: 0.6411 - loss: 0.6327 - val_accuracy: 0.6623 - val_loss: 0.6165
 Epoch 21/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 502us/step - accuracy: 0.6407 - loss: 0.6251 - val_accuracy: 0.6905 - val_loss: 0.6074
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 468us/step - accuracy: 0.6383 - loss: 0.6162 - val_accuracy: 0.6524 - val_loss: 0.6311
 Epoch 22/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 473us/step - accuracy: 0.6444 - loss: 0.6195 - val_accuracy: 0.6842 - val_loss: 0.6130
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 485us/step - accuracy: 0.6311 - loss: 0.6187 - val_accuracy: 0.6581 - val_loss: 0.6173
 Epoch 23/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 504us/step - accuracy: 0.6440 - loss: 0.6150 - val_accuracy: 0.6822 - val_loss: 0.6131
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 455us/step - accuracy: 0.6307 - loss: 0.6235 - val_accuracy: 0.6503 - val_loss: 0.6323
 Epoch 24/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 471us/step - accuracy: 0.6591 - loss: 0.6043 - val_accuracy: 0.6498 - val_loss: 0.6384
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 483us/step - accuracy: 0.6306 - loss: 0.6171 - val_accuracy: 0.6681 - val_loss: 0.6200
 Epoch 25/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 489us/step - accuracy: 0.6349 - loss: 0.6161 - val_accuracy: 0.6884 - val_loss: 0.6185
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 459us/step - accuracy: 0.6414 - loss: 0.6191 - val_accuracy: 0.6347 - val_loss: 0.6411
 Epoch 26/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 467us/step - accuracy: 0.6449 - loss: 0.6327 - val_accuracy: 0.6806 - val_loss: 0.6182
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 489us/step - accuracy: 0.6274 - loss: 0.6276 - val_accuracy: 0.6383 - val_loss: 0.6427
 Epoch 27/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 491us/step - accuracy: 0.6366 - loss: 0.6245 - val_accuracy: 0.6947 - val_loss: 0.6044
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 462us/step - accuracy: 0.6214 - loss: 0.6290 - val_accuracy: 0.6555 - val_loss: 0.6342
 Epoch 28/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 490us/step - accuracy: 0.6476 - loss: 0.6254 - val_accuracy: 0.6942 - val_loss: 0.6044
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 495us/step - accuracy: 0.6249 - loss: 0.6231 - val_accuracy: 0.6618 - val_loss: 0.6254
 Epoch 29/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 492us/step - accuracy: 0.6491 - loss: 0.6161 - val_accuracy: 0.6409 - val_loss: 0.6342
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 461us/step - accuracy: 0.6539 - loss: 0.5972 - val_accuracy: 0.6153 - val_loss: 0.6469
 Epoch 30/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 474us/step - accuracy: 0.6335 - loss: 0.6298 - val_accuracy: 0.6566 - val_loss: 0.6288
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 490us/step - accuracy: 0.6227 - loss: 0.6086 - val_accuracy: 0.6456 - val_loss: 0.6259
 Epoch 31/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 493us/step - accuracy: 0.6446 - loss: 0.6138 - val_accuracy: 0.6722 - val_loss: 0.6133
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 467us/step - accuracy: 0.6345 - loss: 0.6285 - val_accuracy: 0.6519 - val_loss: 0.6099
 Epoch 32/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 462us/step - accuracy: 0.6586 - loss: 0.6158 - val_accuracy: 0.6848 - val_loss: 0.6177
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 488us/step - accuracy: 0.6261 - loss: 0.6184 - val_accuracy: 0.6660 - val_loss: 0.6141
 Epoch 33/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 478us/step - accuracy: 0.6669 - loss: 0.5977 - val_accuracy: 0.6555 - val_loss: 0.6249
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 460us/step - accuracy: 0.6465 - loss: 0.6113 - val_accuracy: 0.6545 - val_loss: 0.6198
 Epoch 34/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 460us/step - accuracy: 0.6338 - loss: 0.6105 - val_accuracy: 0.6581 - val_loss: 0.6369
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 484us/step - accuracy: 0.6476 - loss: 0.6026 - val_accuracy: 0.6550 - val_loss: 0.6214
 Epoch 35/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 480us/step - accuracy: 0.6678 - loss: 0.5975 - val_accuracy: 0.6227 - val_loss: 0.6525
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 460us/step - accuracy: 0.6412 - loss: 0.6080 - val_accuracy: 0.6550 - val_loss: 0.6183
 Epoch 36/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 480us/step - accuracy: 0.6359 - loss: 0.6128 - val_accuracy: 0.6879 - val_loss: 0.6012
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 486us/step - accuracy: 0.6477 - loss: 0.6089 - val_accuracy: 0.6357 - val_loss: 0.6363
 Epoch 37/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 486us/step - accuracy: 0.6385 - loss: 0.6169 - val_accuracy: 0.6806 - val_loss: 0.6157
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 468us/step - accuracy: 0.6472 - loss: 0.6185 - val_accuracy: 0.6759 - val_loss: 0.6027
 Epoch 38/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 477us/step - accuracy: 0.6658 - loss: 0.6114 - val_accuracy: 0.6665 - val_loss: 0.6248
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 495us/step - accuracy: 0.6502 - loss: 0.6001 - val_accuracy: 0.6487 - val_loss: 0.6274
 Epoch 39/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 502us/step - accuracy: 0.6551 - loss: 0.6042 - val_accuracy: 0.6785 - val_loss: 0.6258
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 467us/step - accuracy: 0.6492 - loss: 0.6020 - val_accuracy: 0.6832 - val_loss: 0.6099
 Epoch 40/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 474us/step - accuracy: 0.6615 - loss: 0.6128 - val_accuracy: 0.6968 - val_loss: 0.5981
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 489us/step - accuracy: 0.6563 - loss: 0.6183 - val_accuracy: 0.6654 - val_loss: 0.6212
 Epoch 41/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 493us/step - accuracy: 0.6572 - loss: 0.6006 - val_accuracy: 0.6733 - val_loss: 0.6214
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 461us/step - accuracy: 0.6479 - loss: 0.6107 - val_accuracy: 0.6827 - val_loss: 0.6087
 Epoch 42/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 464us/step - accuracy: 0.6430 - loss: 0.6196 - val_accuracy: 0.6785 - val_loss: 0.6111
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 483us/step - accuracy: 0.6623 - loss: 0.6078 - val_accuracy: 0.6842 - val_loss: 0.6138
 Epoch 43/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 561us/step - accuracy: 0.6521 - loss: 0.6232 - val_accuracy: 0.7067 - val_loss: 0.5930
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 466us/step - accuracy: 0.6703 - loss: 0.6123 - val_accuracy: 0.6837 - val_loss: 0.5989
 Epoch 44/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 475us/step - accuracy: 0.6567 - loss: 0.6223 - val_accuracy: 0.6905 - val_loss: 0.6138
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 484us/step - accuracy: 0.6599 - loss: 0.6094 - val_accuracy: 0.6973 - val_loss: 0.5949
 Epoch 45/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 493us/step - accuracy: 0.6625 - loss: 0.6036 - val_accuracy: 0.6926 - val_loss: 0.6091
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 481us/step - accuracy: 0.6678 - loss: 0.6130 - val_accuracy: 0.6816 - val_loss: 0.6102
 Epoch 46/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 472us/step - accuracy: 0.6593 - loss: 0.6119 - val_accuracy: 0.7020 - val_loss: 0.6087
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 493us/step - accuracy: 0.6602 - loss: 0.5943 - val_accuracy: 0.6743 - val_loss: 0.6158
 Epoch 47/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 497us/step - accuracy: 0.6702 - loss: 0.6112 - val_accuracy: 0.7213 - val_loss: 0.5910
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 472us/step - accuracy: 0.6486 - loss: 0.6328 - val_accuracy: 0.6644 - val_loss: 0.6209
 Epoch 48/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 470us/step - accuracy: 0.6713 - loss: 0.6096 - val_accuracy: 0.7004 - val_loss: 0.6020
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 495us/step - accuracy: 0.6663 - loss: 0.5982 - val_accuracy: 0.6717 - val_loss: 0.6186
 Epoch 49/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 497us/step - accuracy: 0.6755 - loss: 0.5905 - val_accuracy: 0.6592 - val_loss: 0.6248
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 456us/step - accuracy: 0.6668 - loss: 0.5990 - val_accuracy: 0.6837 - val_loss: 0.6112
 Epoch 50/50
-240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 469us/step - accuracy: 0.6552 - loss: 0.6037 - val_accuracy: 0.6691 - val_loss: 0.6214
-60/60 ━━━━━━━━━━━━━━━━━━━━ 0s 387us/step
+240/240 ━━━━━━━━━━━━━━━━━━━━ 0s 490us/step - accuracy: 0.6825 - loss: 0.5880 - val_accuracy: 0.6587 - val_loss: 0.6362
+60/60 ━━━━━━━━━━━━━━━━━━━━ 0s 369us/step
 
 Classification Report:
               precision    recall  f1-score   support
 
-           0       0.90      0.68      0.78      1611
-           1       0.27      0.62      0.37       305
+           0       0.91      0.66      0.77      1611
+           1       0.27      0.65      0.38       305
 
-    accuracy                           0.67      1916
+    accuracy                           0.66      1916
    macro avg       0.59      0.65      0.57      1916
-weighted avg       0.80      0.67      0.71      1916
+weighted avg       0.81      0.66      0.70      1916
 
-Test AUC Score: 0.6950
+Test AUC Score: 0.6924
 WARNING:absl:You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
 Model saved successfully to loan_default_keras_model.h5!
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
+WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
 Model and Scalar loaded successfully!
 -----------------------------------------------------------------------------------------------------------
 Shape : 
@@ -691,7 +798,6 @@ Empty DataFrame
 Columns: [credit.policy, purpose, int.rate, installment, log.annual.inc, dti, fico, days.with.cr.line, revol.bal, revol.util, inq.last.6mths, delinq.2yrs, pub.rec, not.fully.paid]
 Index: []
 -----------------------------------------------------------------------------------------------------------
-WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
    credit.policy             purpose  int.rate  installment  log.annual.inc    dti  fico  days.with.cr.line  revol.bal  revol.util  inq.last.6mths  delinq.2yrs  pub.rec  not.fully.paid
 0              1  debt_consolidation    0.1289       879.10       11.350407  19.68   750        6139.958333      38854        62.1               1            0        1               0
 1              1         credit_card    0.1171       278.22       11.082143  14.49   720        3260.000000      43623        86.7               0            0        0               1
@@ -849,7 +955,7 @@ Index: []
 2              1    0.1457       416.86       10.373491  11.83   695        5210.000000      13511        35.6               4            1        0               0                  0                    0                           1                    0                         0                       0                       0
 3              1    0.1108       212.34       11.350407   8.30   725        3199.958333      43667        83.2               1            0        0               0                  0                    0                           0                    0                         1                       0                       0
 4              1    0.1526       152.92       11.299732  15.17   680        4566.000000      14740        49.5               0            0        1               0                  0                    1                           0                    0                         0                       0                       0
-public/analytical_processors/wrangling/prepare.py:35: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+PycharmProjects/public/analytical_processors/wrangling/prepare.py:37: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
   z_scores = data.select_dtypes(include=['number']).apply(lambda x: stats.zscore(x))
 -----------------------------------------------------------------------------------------------------------
 Shape : 
@@ -1031,27 +1137,39 @@ Index: []
 3              1    home_improvement    0.1108       212.34       11.350407   8.30   725        3199.958333      43667        83.2               1            0        0               0                   NaN        -0.236182           -0.174396               0.240867   -0.843825     0.282264                 -0.922202          0.701905           1.174149              -0.094916           -0.522233       -0.408248              -0.522233
 4              1         credit_card    0.1526       152.92       11.299732  15.17   680        4566.000000      14740        49.5               0            0        1               0                   NaN         1.329092           -0.470373               0.191483    0.710053    -1.444204                 -0.237936         -0.646309          -0.253040              -0.759326           -0.522233        2.449490              -0.522233
 -----------------------------------------------------------------------------------------------------------
-1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 18ms/step
     default_probability_percent  predicted_class
-0                     33.253212                0
-1                     17.123117                0
-2                     47.052078                0
-3                     51.133556                1
-4                     56.945766                1
-5                      4.683031                0
-6                     53.945057                1
-7                     44.567673                0
-8                     47.383392                0
-9                     37.217052                0
-10                    54.526722                1
-11                     1.147902                0
-12                    53.407467                1
-13                     4.285240                0
+0                     19.233219                0
+1                     29.860395                0
+2                     51.072510                1
+3                     44.744862                0
+4                     67.416740                1
+5                      3.269012                0
+6                     46.402420                0
+7                     51.468189                1
+8                     35.272213                0
+9                     43.047184                0
+10                    61.106499                1
+11                     0.833928                0
+12                    66.675262                1
+13                     0.775839                0
 -----------------------------------------------------------------------------------------------------------
+
+Classification Report data_new:
+              precision    recall  f1-score   support
+
+           0       0.78      0.64      0.70        11
+           1       0.20      0.33      0.25         3
+
+    accuracy                           0.57        14
+   macro avg       0.49      0.48      0.47        14
+weighted avg       0.65      0.57      0.60        14
+
+Test AUC Score data_new: 0.4848
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
 Imbalance Ratio: 5.24
-/opt/homebrew/Cellar/python@3.12/3.12.9/venv/lib/python3.12/site-packages/xgboost/training.py:183: UserWarning: [13:09:37] WARNING: /Users/runner/work/xgboost/xgboost/src/learner.cc:738: 
+/opt/homebrew/Cellar/python@3.12/3.12.9/venv/lib/python3.12/site-packages/xgboost/training.py:183: UserWarning: [23:21:30] WARNING: /Users/runner/work/xgboost/xgboost/src/learner.cc:738: 
 Parameters: { "use_label_encoder" } are not used.
 
   bst.update(dtrain, iteration=i, fobj=obj)
@@ -1077,5 +1195,4 @@ Test AUC Score: 0.6253
 -----------------------------------------------------------------------------------------------------------
 
 Process finished with exit code 0
-
 ```
