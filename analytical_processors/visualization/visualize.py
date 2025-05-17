@@ -4,7 +4,7 @@ import seaborn as sb
 
 from lending_club.utils.utilities import get_datetime, create_folder
 
-show = False
+show = True
 
 folder = get_datetime()
 create_folder(folder)
