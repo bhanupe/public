@@ -119,9 +119,9 @@ print(f"Class Weights: {class_weights}")
 
 # Step 4.1 - Feature Engineering - Drop highly correlated features
 X_scaled_df = pd.DataFrame(X_scaled,columns=X.columns)
-data_correlation_plot(X_scaled_df,"")
+data_correlation_plot(X_scaled_df,"ld")
 loan_data_reduced = drop_highly_correlated_features(X_scaled_df, threshold=0.85)
-data_correlation_plot(loan_data_reduced,"")
+data_correlation_plot(loan_data_reduced,"lddhc")
 
 # Step 5: Build Deep Learning Model
 model = Sequential()

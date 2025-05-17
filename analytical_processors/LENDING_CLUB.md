@@ -1228,10 +1228,16 @@ Process finished with exit code 0
 ![zsbpvisualization.visualize_lde.png](20250517095032/zsbpvisualization.visualize_lde.png)
 
 ## Loan Data Keras Model Accuracy
+### Run 1
 ![keras_accuracy___main___.png](20250517095032/keras_accuracy___main___.png)
+### Run 2
+![keras_accuracy___main___.png](20250517095032/keras_accuracy___main___2.png)
 
 ## Loan Data Keras Model Loss
+### Run 1
 ![keras_loss___main___.png](20250517095032/keras_loss___main___.png)
+### Run 2
+![keras_loss___main___.png](20250517095032/keras_loss___main___2.png)
 
 ## Loan Data New Null Analysis
 ![mvvisualization.visualize_ldn.png](20250517095032/mvvisualization.visualize_ldn.png)
@@ -1269,8 +1275,13 @@ Process finished with exit code 0
 ![banpub.rec_visualization.visualize_ldne.png](20250517095032/banpub.rec_visualization.visualize_ldne.png)
 ![bannot.fully.paid_visualization.visualize_ldne.png](20250517095032/bannot.fully.paid_visualization.visualize_ldne.png)
 
+## Loan Data Correlation Matrix
+![cmvisualization.visualize_ld.png](20250517095032/cmvisualization.visualize_ld.png)
+![cmvisualization.visualize_lde.png](20250517095032/cmvisualization.visualize_lde.png)
+![cmvisualization.visualize_lddhc.png](20250517095032/cmvisualization.visualize_lddhc.png)
+
 ## Loan Data New Correlation Matrix
-![cmvisualization.visualize_.png](20250517095032/cmvisualization.visualize_.png)
+![cmvisualization.visualize_ldne.png](20250517095032/cmvisualization.visualize_ldne.png)
 
 ## Loan Data New Pair Plot
 ![ppvisualization.visualize_ldne.png](20250517095032/ppvisualization.visualize_ldne.png)

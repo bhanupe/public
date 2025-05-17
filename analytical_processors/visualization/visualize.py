@@ -43,7 +43,7 @@ def line_plot(grouped_data, identifier=""):
 
 
 def multivariate_analysis(data, target, identifier=""):
-    data_correlation_plot(data,"")
+    data_correlation_plot(data, identifier)
 
     # Optional: Pairplot
     sb.pairplot(data, hue=target)
@@ -129,7 +129,8 @@ def box_plot(data, identifier=""):
     plt.ylabel('Z-Score')
     save_show(plt, f'zsbp{__name__}', identifier)
 
-def data_correlation_plot(data,identifier=""):
+
+def data_correlation_plot(data, identifier=""):
     plt.figure(figsize=(20, 10))
     sb.heatmap(data.corr(), annot=True, cmap='BuGn', fmt='.2g', linewidths='2')
     plt.title('Correlation matrix')
