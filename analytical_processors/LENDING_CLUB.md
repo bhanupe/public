@@ -1196,64 +1196,90 @@ Test AUC Score: 0.6253
 
 Process finished with exit code 0
 ```
-![20250517095032](20250517095032/mvvisualization.visualize_ld.png)
-![20250517095032](20250517095032/nvvisualization.visualize_ld.png)
-![20250517095032](20250517095032/mvvisualization.visualize_lde.png)
-![20250517095032](20250517095032/nvvisualization.visualize_lde.png)
-![20250517095032](20250517095032/bancredit.policy_visualization.visualize_lde.png)
-![20250517095032](20250517095032/banpurpose_visualization.visualize_lde.png)
-![20250517095032](20250517095032/banint.rate_visualization.visualize_lde.png)
-![20250517095032](20250517095032/baninstallment_visualization.visualize_lde.png)
-![20250517095032](20250517095032/banlog.annual.inc_visualization.visualize_lde.png)
-![20250517095032](20250517095032/bandti_visualization.visualize_lde.png)
-![20250517095032](20250517095032/banfico_visualization.visualize_lde.png)
-![20250517095032](20250517095032/bandays.with.cr.line_visualization.visualize_lde.png)
-![20250517095032](20250517095032/banrevol.bal_visualization.visualize_lde.png)
-![20250517095032](20250517095032/banrevol.util_visualization.visualize_lde.png)
-![20250517095032](20250517095032/baninq.last.6mths_visualization.visualize_lde.png)
-![20250517095032](20250517095032/bandelinq.2yrs_visualization.visualize_lde.png)
-![20250517095032](20250517095032/banpub.rec_visualization.visualize_lde.png)
-![20250517095032](20250517095032/bannot.fully.paid_visualization.visualize_lde.png)
-![20250517095032](20250517095032/ppvisualization.visualize_lde.png)
-![20250517095032](20250517095032/zsbpvisualization.visualize_lde.png)
-![20250517095032](20250517095032/keras_accuracy___main___.png)
-![20250517095032](20250517095032/keras_loss___main___.png)
-![20250517095032](20250517095032/mvvisualization.visualize_ldn.png)
-![20250517095032](20250517095032/nvvisualization.visualize_ldn.png)
-![20250517095032](20250517095032/mvvisualization.visualize_ldne.png)
-![20250517095032](20250517095032/nvvisualization.visualize_ldne.png)
-![20250517095032](20250517095032/uancredit.policy_visualization.visualize_.png)
-![20250517095032](20250517095032/uanpurpose_visualization.visualize_.png)
-![20250517095032](20250517095032/uanint.rate_visualization.visualize_.png)
-![20250517095032](20250517095032/uaninstallment_visualization.visualize_.png)
-![20250517095032](20250517095032/uanlog.annual.inc_visualization.visualize_.png)
-![20250517095032](20250517095032/uandti_visualization.visualize_.png)
-![20250517095032](20250517095032/uanfico_visualization.visualize_.png)
-![20250517095032](20250517095032/uandays.with.cr.line_visualization.visualize_.png)
-![20250517095032](20250517095032/uanrevol.bal_visualization.visualize_.png)
-![20250517095032](20250517095032/uanrevol.util_visualization.visualize_.png)
-![20250517095032](20250517095032/uaninq.last.6mths_visualization.visualize_.png)
-![20250517095032](20250517095032/uandelinq.2yrs_visualization.visualize_.png)
-![20250517095032](20250517095032/uanpub.rec_visualization.visualize_.png)
-![20250517095032](20250517095032/uannot.fully.paid_visualization.visualize_.png)
-![20250517095032](20250517095032/bancredit.policy_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/banpurpose_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/banint.rate_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/baninstallment_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/banlog.annual.inc_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/bandti_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/banfico_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/bandays.with.cr.line_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/banrevol.bal_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/banrevol.util_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/baninq.last.6mths_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/bandelinq.2yrs_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/banpub.rec_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/bannot.fully.paid_visualization.visualize_ldne.png)
-![20250517095032](20250517095032/cmvisualization.visualize_.png)
-![20250517095032](20250517095032/ppvisualization.visualize_ldne.png)
-![20250517095032](20250517095032/zsbpvisualization.visualize_ldne.png)
-![20250517095032](20250517095032/xgboost_tif___main___.png)
+
+# EDA
+
+## Loan Data Null Analysis
+![mvvisualization.visualize_ld.png](20250517095032/mvvisualization.visualize_ld.png)
+![nvvisualization.visualize_ld.png](20250517095032/nvvisualization.visualize_ld.png)
+![mvvisualization.visualize_lde.png](20250517095032/mvvisualization.visualize_lde.png)
+![nvvisualization.visualize_lde.png](20250517095032/nvvisualization.visualize_lde.png)
+
+## Loan Data Box Plots
+![bancredit.policy_visualization.visualize_lde.png](20250517095032/bancredit.policy_visualization.visualize_lde.png)
+![banpurpose_visualization.visualize_lde.png](20250517095032/banpurpose_visualization.visualize_lde.png)
+![banint.rate_visualization.visualize_lde.png](20250517095032/banint.rate_visualization.visualize_lde.png)
+![baninstallment_visualization.visualize_lde.png](20250517095032/baninstallment_visualization.visualize_lde.png)
+![banlog.annual.inc_visualization.visualize_lde.png](20250517095032/banlog.annual.inc_visualization.visualize_lde.png)
+![bandti_visualization.visualize_lde.png](20250517095032/bandti_visualization.visualize_lde.png)
+![banfico_visualization.visualize_lde.png](20250517095032/banfico_visualization.visualize_lde.png)
+![bandays.with.cr.line_visualization.visualize_lde.png](20250517095032/bandays.with.cr.line_visualization.visualize_lde.png)
+![banrevol.bal_visualization.visualize_lde.png](20250517095032/banrevol.bal_visualization.visualize_lde.png)
+![banrevol.util_visualization.visualize_lde.png](20250517095032/banrevol.util_visualization.visualize_lde.png)
+![baninq.last.6mths_visualization.visualize_lde.png](20250517095032/baninq.last.6mths_visualization.visualize_lde.png)
+![bandelinq.2yrs_visualization.visualize_lde.png](20250517095032/bandelinq.2yrs_visualization.visualize_lde.png)
+![banpub.rec_visualization.visualize_lde.png](20250517095032/banpub.rec_visualization.visualize_lde.png)
+![bannot.fully.paid_visualization.visualize_lde.png](20250517095032/bannot.fully.paid_visualization.visualize_lde.png)
+
+## Loan Data Pair Plot
+![ppvisualization.visualize_lde.png](20250517095032/ppvisualization.visualize_lde.png)
+
+## Loan Data Z Scores
+![zsbpvisualization.visualize_lde.png](20250517095032/zsbpvisualization.visualize_lde.png)
+
+## Loan Data Keras Model Accuracy
+![keras_accuracy___main___.png](20250517095032/keras_accuracy___main___.png)
+
+## Loan Data Keras Model Loss
+![keras_loss___main___.png](20250517095032/keras_loss___main___.png)
+
+## Loan Data New Null Analysis
+![mvvisualization.visualize_ldn.png](20250517095032/mvvisualization.visualize_ldn.png)
+![nvvisualization.visualize_ldn.png](20250517095032/nvvisualization.visualize_ldn.png)
+![mvvisualization.visualize_ldne.png](20250517095032/mvvisualization.visualize_ldne.png)
+![nvvisualization.visualize_ldne.png](20250517095032/nvvisualization.visualize_ldne.png)
+
+## Loan Data New Box Plots
+![uancredit.policy_visualization.visualize_.png](20250517095032/uancredit.policy_visualization.visualize_.png)
+![uanpurpose_visualization.visualize_.png](20250517095032/uanpurpose_visualization.visualize_.png)
+![uanint.rate_visualization.visualize_.png](20250517095032/uanint.rate_visualization.visualize_.png)
+![uaninstallment_visualization.visualize_.png](20250517095032/uaninstallment_visualization.visualize_.png)
+![uanlog.annual.inc_visualization.visualize_.png](20250517095032/uanlog.annual.inc_visualization.visualize_.png)
+![uandti_visualization.visualize_.png](20250517095032/uandti_visualization.visualize_.png)
+![uanfico_visualization.visualize_.png](20250517095032/uanfico_visualization.visualize_.png)
+![uandays.with.cr.line_visualization.visualize_.png](20250517095032/uandays.with.cr.line_visualization.visualize_.png)
+![uanrevol.bal_visualization.visualize_.png](20250517095032/uanrevol.bal_visualization.visualize_.png)
+![uanrevol.util_visualization.visualize_.png](20250517095032/uanrevol.util_visualization.visualize_.png)
+![uaninq.last.6mths_visualization.visualize_.png](20250517095032/uaninq.last.6mths_visualization.visualize_.png)
+![uandelinq.2yrs_visualization.visualize_.png](20250517095032/uandelinq.2yrs_visualization.visualize_.png)
+![uanpub.rec_visualization.visualize_.png](20250517095032/uanpub.rec_visualization.visualize_.png)
+![uannot.fully.paid_visualization.visualize_.png](20250517095032/uannot.fully.paid_visualization.visualize_.png)
+![bancredit.policy_visualization.visualize_ldne.png](20250517095032/bancredit.policy_visualization.visualize_ldne.png)
+![banpurpose_visualization.visualize_ldne.png](20250517095032/banpurpose_visualization.visualize_ldne.png)
+![banint.rate_visualization.visualize_ldne.png](20250517095032/banint.rate_visualization.visualize_ldne.png)
+![baninstallment_visualization.visualize_ldne.png](20250517095032/baninstallment_visualization.visualize_ldne.png)
+![banlog.annual.inc_visualization.visualize_ldne.png](20250517095032/banlog.annual.inc_visualization.visualize_ldne.png)
+![bandti_visualization.visualize_ldne.png](20250517095032/bandti_visualization.visualize_ldne.png)
+![banfico_visualization.visualize_ldne.png](20250517095032/banfico_visualization.visualize_ldne.png)
+![bandays.with.cr.line_visualization.visualize_ldne.png](20250517095032/bandays.with.cr.line_visualization.visualize_ldne.png)
+![banrevol.bal_visualization.visualize_ldne.png](20250517095032/banrevol.bal_visualization.visualize_ldne.png)
+![banrevol.util_visualization.visualize_ldne.png](20250517095032/banrevol.util_visualization.visualize_ldne.png)
+![baninq.last.6mths_visualization.visualize_ldne.png](20250517095032/baninq.last.6mths_visualization.visualize_ldne.png)
+![bandelinq.2yrs_visualization.visualize_ldne.png](20250517095032/bandelinq.2yrs_visualization.visualize_ldne.png)
+![banpub.rec_visualization.visualize_ldne.png](20250517095032/banpub.rec_visualization.visualize_ldne.png)
+![bannot.fully.paid_visualization.visualize_ldne.png](20250517095032/bannot.fully.paid_visualization.visualize_ldne.png)
+
+## Loan Data New Correlation Matrix
+![cmvisualization.visualize_.png](20250517095032/cmvisualization.visualize_.png)
+
+## Loan Data New Pair Plot
+![ppvisualization.visualize_ldne.png](20250517095032/ppvisualization.visualize_ldne.png)
+
+## Loan Data New Z Scores
+![zsbpvisualization.visualize_ldne.png](20250517095032/zsbpvisualization.visualize_ldne.png)
+
+## XG Boost Model Top 10 Features
+![xgboost_tif___main___.png](20250517095032/xgboost_tif___main___.png)
 
 
 
