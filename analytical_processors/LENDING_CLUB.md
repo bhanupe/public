@@ -7,7 +7,11 @@ Model Accuracy with Keras
 Model Accuracy with XG Boost
 
     accuracy-0.69, Test AUC Score: 0.6253
-Based on Industry standard accuracy should be 80%, we are not getting accuracy = 80% because of data is not enough. Hence performance of the model should be considered as poor, we can still rely on this model with Manual judgement.
+ 
+## Here are th conclusion with Keras model.
+A precision of 71% means that out of all the positive predictions the model made, 71% were actually correct. This indicates that the model is fairly good at identifying true positives while keeping false positives relatively low.
+An AUC score of 0.70 suggests that the model has a decent ability to distinguish between classes. A score of 0.70 means that in 70% of the cases, the model can correctly differentiate between positive and negative classes. While not perfect, it's a solid starting point, and there's room for improvement.
+Overall, the model is reasonably effective but could benefit from further tuning or additional data to improve both precision and the AUC score. You might also want to look at other metrics like recall and F1-score to get a more comprehensive view of the model's performance.
 
 
 ## Run Predictions API
