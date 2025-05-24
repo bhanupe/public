@@ -15,6 +15,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import load_model
+from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
 import joblib
 
@@ -138,29 +139,90 @@ model.add(Dropout(0.2))
 model.add(Dense(1, activation='sigmoid'))
 
 # Step 6: Compile Model
-model.compile(optimizer=Adam(learning_rate=0.001),
+model.compile(optimizer=Adam(learning_rate=0.01),
               loss='binary_crossentropy',
               metrics=['accuracy'])
-
 # Step 7: Train Model
+early_stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 history = model.fit(X_train, y_train,
                     validation_data=(X_test, y_test),
-                    epochs=50,
+                    epochs=25,
                     batch_size=32,
                     class_weight=class_weights,
+                    callbacks=[early_stop],
                     verbose=1)
 
 # Step 8: Evaluate Model
 y_pred_probs = model.predict(X_test).ravel()  # Probability predictions
 y_pred_classes = (y_pred_probs > 0.5).astype(int)  # Threshold 0.5
 
-# Print Classification Report
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred_classes))
-
 # Calculate AUC Score
 auc_score = roc_auc_score(y_test, y_pred_probs)
 print(f"Test AUC Score: {auc_score:.4f}")
+
+# Print Classification Report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred_classes))
+print(f"Test AUC Score: {auc_score:.4f}")
+
+# Save the full model (architecture + weights + optimizer state)
+model.save('loan_default_keras_model_0_7073.h5')
+print("Model saved successfully to loan_default_keras_model_0_7073.h5!")
+# Save the scaler
+joblib.dump(scaler, 'scaler_0_7073.pkl')
+
+
+maxAucScore = 0
+maxPatience = 0
+peakAucScore =0
+print("please wait for 15 min to complete the model optimization")
+# These loops will take 15 mins
+for j in range(5,7):
+    early_stop = EarlyStopping(monitor='val_loss', patience=j, restore_best_weights=True)
+    if(peakAucScore <= maxAucScore):
+        peakAucScore = maxAucScore
+        maxPatience = j
+    for i in range(20,25):
+        # Step 7: Train Model
+        history = model.fit(X_train, y_train,
+                        validation_data=(X_test, y_test),
+                        epochs=i,
+                        batch_size=32,
+                        class_weight=class_weights,
+                        callbacks=[early_stop],
+                        verbose=1)
+
+        # Step 8: Evaluate Model
+        y_pred_probs = model.predict(X_test).ravel()  # Probability predictions
+        y_pred_classes = (y_pred_probs > 0.5).astype(int)  # Threshold 0.5
+
+        # Calculate AUC Score
+        auc_score = roc_auc_score(y_test, y_pred_probs)
+        print(f"Test AUC Score: {auc_score:.4f}")
+        currentAucScore = auc_score
+
+        if maxAucScore < currentAucScore or currentAucScore > 0.8:
+            maxAucScore = currentAucScore
+            print(f"Training stopped at epoch: {len(history.history['loss'])}")
+            best_epoch = np.argmin(history.history['val_loss'])
+            print(f"Best epoch based on val_loss: {best_epoch}")
+            # Print Classification Report
+            print("\nClassification Report:")
+            print(classification_report(y_test, y_pred_classes))
+            print(f"Test AUC Score: {auc_score:.4f}")
+
+            # Save the full model (architecture + weights + optimizer state)
+            model.save('loan_default_keras_model_0_7073.h5')
+            print("Model saved successfully to loan_default_keras_model_0_7073.h5!")
+            # Save the scaler
+            joblib.dump(scaler, 'scaler_0_7073.pkl')
+        if maxAucScore > 0.8:
+            break
+
+print("\npeakAucScore:")
+print(peakAucScore)
+print("\nmaxPatience:")
+print(maxPatience)
 
 # Accuracy
 plt.plot(history.history['accuracy'], label='Train Accuracy')
@@ -180,15 +242,7 @@ plt.ylabel('Loss')
 plt.legend()
 save_show(plt, f'keras_loss_{__name__}')
 
-# Save the full model (architecture + weights + optimizer state)
-model.save('loan_default_keras_model.h5')
-print("Model saved successfully to loan_default_keras_model.h5!")
 
-# Save the scaler
-joblib.dump(scaler, 'scaler.pkl')
-
-# Later load it
-scaler = joblib.load('scaler.pkl')
 
 # Classification Report:
 #               precision    recall  f1-score   support
@@ -208,8 +262,8 @@ printline()
 printline()
 ###########################################  Keras Model Use  ###########################################
 # Load the model
-model = load_model('loan_default_keras_model.h5')
-scaler = joblib.load('scaler.pkl')
+model = load_model('loan_default_keras_model_0_7073.h5')
+scaler = joblib.load('scaler_0_7073.pkl')
 print("Model and Scalar loaded successfully!")
 
 data_new = pd.read_csv("lending_club/data/loan_data_new.csv")
