@@ -16,7 +16,7 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from visualization.visualize import heat_map, hist_plot, count_plot
+from visualization.visualize import multivariate_analysis, hist_plot, count_plot, save_show
 from wrangling.insights import explain
 
 # Main Execution
@@ -31,16 +31,13 @@ if __name__ == "__main__":
         # One of the column was with wrong name 'sales'; renamed in the dataframe to 'department'
         data.rename(columns={'sales': 'department'}, inplace=True)
         explain(data)
-        print(data.head(3))
         ########### Data Quality Checks ###########
 
         ########### Correlation Matrix ############
         # Draw a heatmap of the correlation matrix between all numerical features or columns in the data.
         # Numerical mapping for salary levels
-
-        explain(data)
         encoded_data = pd.get_dummies(data, dtype=int)
-        print(encoded_data.head(3))
+        explain(encoded_data)
         encoded_data.to_csv('encoded_data.csv', index=False)
         target_cols = encoded_data['left']
         print(target_cols)
@@ -58,7 +55,7 @@ if __name__ == "__main__":
         # 0 means no correlation.
         # Based on a predefined threshold (for example, 0.9), you can identify pairs of columns that are highly correlated and drop them.
         print(f'Describe Correlation : \n{corr_mat}')
-        heat_map(corr_mat)
+        multivariate_analysis(encoded_data, 'left')
 
         # Reasons behind employees leaving are influenced by
         # satisfaction_level -> salary -> work_accident -> department
@@ -111,7 +108,7 @@ if __name__ == "__main__":
         ## K-Means Clustering Steps
         ## 3.1 Choose columns satisfaction_level, last_evaluation, and left.
         test_data = encoded_data[encoded_data['left'] == 1][['satisfaction_level', 'last_evaluation']]
-        test_data.head(2)
+        explain(test_data)
 
         ## Standardization using StandardScaler before K-Means Clustering
         sc = StandardScaler()
@@ -125,8 +122,7 @@ if __name__ == "__main__":
         ## K-Means Cluster profiling
         cluster_data = copy.deepcopy(test_data)
         cluster_data['clus_label'] = cluster_labels
-        print('----')
-        print(cluster_data.head(3))
+        explain(cluster_data)
 
         ## Visualize Scatter Plot after K-Means clustering.
         f = plt.subplots(1, 1, figsize=(15, 6))
@@ -135,7 +131,7 @@ if __name__ == "__main__":
         plt.xlabel('Satisfaction Level')
         plt.ylabel('Last Evaluation')
         plt.title('K-Means Clustering of Employees Who Left')
-        plt.show()
+        save_show(plt, f'kmcsp1{__name__}')
 
         ## 3.3 Inference from Clusters
         ###### Cluster 0 (Low Satisfaction, High Evaluation) employees are at the highest risk—even if they perform well, they leave due to dissatisfaction.
@@ -165,7 +161,7 @@ if __name__ == "__main__":
         axes[1].set_title("After SMOTE")
         axes[1].set_xlabel("Left (0 = Stayed, 1 = Left)")
 
-        plt.show()
+        save_show(plt, f'smcp{__name__}')
 
         # Step 5: Verify Class Distribution Before & After
         print("Original Training Set Class Distribution:", dict(pd.Series(y_train).value_counts()))
@@ -256,7 +252,7 @@ if __name__ == "__main__":
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
-        plt.show()
+        save_show(plt, f'crroctrs{__name__}')
 
         log_reg = LogisticRegression(max_iter=5000)
         rfmodel = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -287,7 +283,7 @@ if __name__ == "__main__":
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
-        plt.show()
+        save_show(plt, f'crroctr{__name__}')
 
         # Find the confusion matrix for each of the models.
         # Make predictions using each model
@@ -380,7 +376,7 @@ if __name__ == "__main__":
         ## 3.1 Choose columns satisfaction_level, last_evaluation, and left.
         print(rf_prob_df.columns)
         outcome_data = rf_prob_df[['Employee_satisfaction_level', 'Employee_last_eval_level']]
-        outcome_data.head(2)
+        explain(outcome_data)
 
         ## Standardization using StandardScaler before K-Means Clustering
         sc = StandardScaler()
@@ -394,15 +390,14 @@ if __name__ == "__main__":
         ## K-Means Cluster profiling
         cluster_data = copy.deepcopy(outcome_data)
         cluster_data['clus_label'] = cluster_labels
-        print('----')
-        print(cluster_data.head(3))
+        explain(cluster_data)
 
         ## Visualize Scatter Plot after K-Means clustering.
         f1 = plt.subplots(1, 1, figsize=(15, 6))
         sb.scatterplot(x=cluster_data.Employee_satisfaction_level, y=cluster_data.Employee_last_eval_level,
                        hue=cluster_data.clus_label,
                        palette='rainbow_r')
-        plt.show()
+        save_show(plt, f'kmcsp2{__name__}')
 
         ## Clustering for employee data for the predicted probability who is staying currently
 
@@ -426,15 +421,14 @@ if __name__ == "__main__":
         ## K-Means Cluster profiling
         cluster_data = copy.deepcopy(outcome_data_stayed)
         cluster_data['clus_label'] = cluster_labels
-        print('----')
-        print(cluster_data.head(3))
+        explain(cluster_data)
 
         ## Visualize Scatter Plot after K-Means clustering.
         f2 = plt.subplots(1, 1, figsize=(15, 6))
         sb.scatterplot(x=cluster_data.Employee_satisfaction_level, y=cluster_data.Employee_last_eval_level,
                        hue=cluster_data.clus_label,
                        palette='rainbow_r')
-        plt.show()
+        save_show(plt, f'kmcsp3{__name__}')
 
         ## Clustering for employee data for the predicted probability who is staying currently
 
@@ -458,15 +452,14 @@ if __name__ == "__main__":
         ## K-Means Cluster profiling
         cluster_data = copy.deepcopy(outcome_data_stayed)
         cluster_data['clus_label'] = cluster_labels
-        print('----')
-        print(cluster_data.head(3))
+        explain(cluster_data)
 
         ## Visualize Scatter Plot after K-Means clustering.
         f2 = plt.subplots(1, 1, figsize=(15, 6))
         sb.scatterplot(x=cluster_data.Employee_satisfaction_level, y=cluster_data.Employee_last_eval_level,
                        hue=cluster_data.clus_label,
                        palette='rainbow_r')
-        plt.show()
+        save_show(plt, f'kmcsp4{__name__}')
 
         ## Clustering for employee data for the predicted probability who is staying currently and high risk zone
 
@@ -491,17 +484,13 @@ if __name__ == "__main__":
         ## K-Means Cluster profiling
         cluster_data = copy.deepcopy(outcome_data_stayed_high)
         cluster_data['clus_label'] = cluster_labels
-        print('----')
-        print(cluster_data.head(3))
+        explain(cluster_data)
 
         ## Visualize Scatter Plot after K-Means clustering.
         f2 = plt.subplots(1, 1, figsize=(15, 6))
         sb.scatterplot(x=cluster_data.Employee_satisfaction_level, y=cluster_data.Employee_last_eval_level,
                        hue=cluster_data.clus_label,
                        palette='rainbow_r')
-        plt.show()
-
-
-
+        save_show(plt, f'kmcsp5{__name__}')
     except Exception as e:
         print(f"error={e}, traceback={traceback.format_exc()}, line_no={e.__traceback__.tb_lineno}")

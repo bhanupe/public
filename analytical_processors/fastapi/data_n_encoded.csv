@@ -1,0 +1,8 @@
+credit.policy,int.rate,installment,log.annual.inc,dti,fico,days.with.cr.line,revol.bal,revol.util,inq.last.6mths,delinq.2yrs,pub.rec,not.fully.paid,purpose_all_other,purpose_credit_card,purpose_debt_consolidation,purpose_educational,purpose_home_improvement,purpose_major_purchase,purpose_small_business
+1,0.12,278.0,11.08,14.49,720,3260,43623,86.7,0,1,0,0,1,0,0,0,0,0,0
+1,0.11,890.0,12.09,12.09,800,3432,89089,76.7,1,0,0,0,0,1,0,0,0,0,0
+1,0.13,234.43,13.45,13.45,790,4332,89878,90.7,0,0,1,0,0,0,1,0,0,0,0
+1,0.14,234.23,12.43,12.43,678,6765,56547,89.7,2,0,0,0,0,0,0,1,0,0,0
+1,0.1,221.55,13.56,13.56,780,2334,34544,66.7,4,0,0,0,0,0,0,0,1,0,0
+1,0.09,454.99,9.23,9.23,770,6677,76556,76.7,1,0,0,0,0,0,0,0,0,1,0
+0,0.15,223.9,14.8,14.8,678,4556,100000,96.7,2,1,0,1,0,0,0,0,0,0,1
