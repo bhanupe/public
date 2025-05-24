@@ -1,3 +1,15 @@
+
+# Conclusions
+Model Accuracy with Keras
+
+    accuracy-0.71, Test AUC Score: 0.7058
+
+Model Accuracy with XG Boost
+
+    accuracy-0.69, Test AUC Score: 0.6253
+Based on Industry standard accuracy should be 80%, we are not getting accuracy = 80% because of data is not enough. Hence performance of the model should be considered as poor, we can still rely on this model with Manual judgement.
+
+
 ## Run Predictions API
 ```commandline
 $ cd analytical_processors/fastapi
