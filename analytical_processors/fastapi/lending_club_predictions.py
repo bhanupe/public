@@ -8,8 +8,8 @@ from analytical_processors.wrangling.prepare import encode
 app = Flask(__name__)
 
 # # Load the model and scaler
-model = tf.keras.models.load_model('../loan_default_keras_model.h5')
-scaler = joblib.load('../scaler.pkl')
+model = tf.keras.models.load_model('../loan_default_keras_model_0_7073.h5')
+scaler = joblib.load('../scaler_0_7073.pkl')
 
 
 @app.route('/predict', methods=['POST'])
