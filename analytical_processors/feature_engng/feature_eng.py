@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def drop_highly_correlated_features(df, threshold=0.85):
     # 1. Compute correlation matrix
     corr_matrix = df.corr().abs()
