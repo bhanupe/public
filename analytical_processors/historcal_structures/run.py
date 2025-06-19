@@ -131,26 +131,26 @@ adapted_model = tf.keras.Model(inputs=input_tensor, outputs=output_tensor)
 adapted_model.summary()
 # # ------------------------------------------------------------------------------------------
 # 1. Compile the adapted model
-# adapted_model.compile(
-#     optimizer=tf.keras.optimizers.Adam(learning_rate=5e-5),  # A common learning rate for fine-tuning
-#     loss=tf.keras.losses.SparseCategoricalCrossentropy(),  # Suitable for integer labels
-#     metrics=['accuracy']  # Track accuracy during training
-# )
-#
-# print("Model compiled successfully.")
-#
-# # 2. & 3. Train the compiled model
-# EPOCHS = 10  # Define a suitable number of epochs
-#
-# print(f"Starting training for {EPOCHS} epochs...")
-#
-# history = adapted_model.fit(
-#     train_ds,
-#     epochs=EPOCHS,
-#     validation_data=val_ds
-# )
-#
-# print("Training finished.")
+adapted_model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=5e-5),  # A common learning rate for fine-tuning
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(),  # Suitable for integer labels
+    metrics=['accuracy']  # Track accuracy during training
+)
+
+print("Model compiled successfully.")
+
+# 2. & 3. Train the compiled model
+EPOCHS = 10  # Define a suitable number of epochs
+
+print(f"Starting training for {EPOCHS} epochs...")
+
+history = adapted_model.fit(
+    train_ds,
+    epochs=EPOCHS,
+    validation_data=val_ds
+)
+
+print("Training finished.")
 
 # 4. Store the training history in a variable for later analysis. (Already done in the fit call)
 # # ------------------------------------------------------------------------------------------
@@ -834,26 +834,26 @@ print(f"Loss: {full_test_evaluation_results[0]}")
 print(f"Accuracy: {full_test_evaluation_results[1]}")
 # # ------------------------------------------------------------------------------------------
 # # 1. Compile the adapted model
-# adapted_model.compile(
-#     optimizer=tf.keras.optimizers.Adam(learning_rate=5e-5),  # A common learning rate for fine-tuning
-#     loss=tf.keras.losses.SparseCategoricalCrossentropy(),  # Suitable for integer labels
-#     metrics=['accuracy']  # Track accuracy during training
-# )
-#
-# print("Model compiled successfully.")
-#
-# # 2. & 3. Train the compiled model
-# EPOCHS = 10  # Define a suitable number of epochs
-#
-# print(f"Starting training for {EPOCHS} epochs...")
-#
-# history = adapted_model.fit(
-#     train_ds,
-#     epochs=EPOCHS,
-#     validation_data=val_ds
-# )
-#
-# print("Training finished.")
+adapted_model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=5e-5),  # A common learning rate for fine-tuning
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(),  # Suitable for integer labels
+    metrics=['accuracy']  # Track accuracy during training
+)
+
+print("Model compiled successfully.")
+
+# 2. & 3. Train the compiled model
+EPOCHS = 10  # Define a suitable number of epochs
+
+print(f"Starting training for {EPOCHS} epochs...")
+
+history = adapted_model.fit(
+    train_ds,
+    epochs=EPOCHS,
+    validation_data=val_ds
+)
+
+print("Training finished.")
 # # ------------------------------------------------------------------------------------------
 # Import necessary libraries
 import os
