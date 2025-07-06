@@ -47,7 +47,8 @@ ssl._create_default_https_context = ssl._create_unverified_context
 # Paths to image dataset
 data_dir = 'data/part1/dataset_hist_structures/Stuctures_Dataset'  # Replace with actual path after unzip
 categories = os.listdir(data_dir)
-categories.remove('.DS_Store')
+if '.DS_Store' in categories:
+    categories.remove('.DS_Store')
 # Sample image plots
 for category in categories:
     path = os.path.join(data_dir, category)
