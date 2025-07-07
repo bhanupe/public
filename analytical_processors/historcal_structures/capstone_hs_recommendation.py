@@ -3,7 +3,40 @@
 
 import pandas as pd
 from surprise import Dataset, Reader, SVD
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+from surprise.model_selection import cross_validate
+import os
+from datetime import datetime
 
+
+def get_datetime():
+    now = datetime.now()
+
+    # It is also possible to format the output:
+    return now.strftime("%Y%m%d%H%M%S")
+
+
+def create_folder(name):
+    if not os.path.exists(name):
+        os.makedirs(name)
+
+
+show = True
+folder = get_datetime()
+create_folder(folder)
+
+
+def save_show(plot, name):
+    plot.savefig(f'{folder}/{name}.png')
+    if show:
+        plot.show()
+
+
+warnings.filterwarnings("ignore")
+
+# part 2: Method 1
 ratings_df = pd.read_csv('data/part2/tourism_rating.csv')
 
 # Load data into Surprise's Dataset format
@@ -45,9 +78,9 @@ users_df = pd.read_csv('data/part2/user.csv')
 for user_id_to_recommend in users_df['User_Id']:
     recommendations = get_recommendations(user_id_to_recommend)
 
-    print(f"\nTop 5 Recommendations for User {user_id_to_recommend} ---")
+    print(f"\n**Top Recommendations for User {user_id_to_recommend}**")
     for item, estimated_rating in recommendations:
-        print(f"\tRecommended Category: {item}, Estimated Rating: {estimated_rating:.2f}")
+        print(f"- Recommended Category: {item}, Estimated Rating: {estimated_rating:.2f}")
 
         try:
             # Find places in the recommended category with a similar rating
@@ -55,13 +88,76 @@ for user_id_to_recommend in users_df['User_Id']:
                 (tourism_df['Place_Id'] == item) &
                 (tourism_df['Rating'] >= estimated_rating * 0.9) &
                 (tourism_df['Rating'] <= estimated_rating * 1.1)
-            ]
+                ]
 
-            print(f"\tPlaces in category '{item}' with similar rating ---")
+            print(f"- Places in category '{item}' with similar rating ---")
             if not similar_places.empty:
                 for _, row in similar_places.iterrows():
-                    print(f"\tPlace: {row['Place_Id']}\n\tPlace: {row['Place_Name']}\n\tDescription: {row['Description']}\n\tCity: {row['City']}\n\tPrice: {row['Price']}\n\tRating: {row['Rating']:.2f}\n")
+                    print(
+                        f"- Place: {row['Place_Id']}\n- Place: {row['Place_Name']}\n- Description: {row['Description']}\n- City: {row['City']}\n- Price: {row['Price']}\n- Rating: {row['Rating']:.2f}\n")
             else:
-                print("\t\tNo similar places found\n")
+                print("- - No similar places found\n")
         except KeyError as e:
-            print(f"\tAn error occurred while finding similar places. A required column is missing: {e}")
+            print(f"- An error occurred while finding similar places. A required column is missing: {e}")
+
+# part 2: Method 2
+users = pd.read_csv("data/part2/user.csv")
+places = pd.read_excel("data/part2/tourism_with_id.xlsx")
+ratings = pd.read_csv("data/part2/tourism_rating.csv")
+
+users.drop_duplicates(inplace=True)
+places.drop_duplicates(inplace=True)
+ratings.drop_duplicates(inplace=True)
+
+print("sums the NAN values column-wise, giving you the total number of missing values in each column of the DataFrame")
+print(users.isnull().sum())
+print(places.isnull().sum())
+print(ratings.isnull().sum())
+
+sns.histplot(users['Age'], bins=20, kde=True)
+plt.title("Age Distribution of Tourists")
+save_show(plt, "AgeDistributionOfTourists")
+
+sns.countplot(y='Location', data=users, order=users['Location'].value_counts().index[:10])
+plt.title("Top Tourist Origins")
+save_show(plt, "TopTouristOrigins")
+
+merged = ratings.merge(users, on='User_Id').merge(places, on='Place_Id')
+
+top_places = merged.groupby('Place_Name')['Place_Ratings'].mean().sort_values(ascending=False)
+print(top_places.head())
+
+best_cities = merged.groupby('City')['Place_Ratings'].mean().sort_values(ascending=False)
+print(best_cities.head())
+
+best_categories = merged.groupby('Category')['Place_Ratings'].mean().sort_values(ascending=False)
+print(best_categories.head())
+
+reader = Reader(rating_scale=(1, 5))
+data = Dataset.load_from_df(ratings[['User_Id', 'Place_Id', 'Place_Ratings']], reader)
+
+algo = SVD()
+cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
+
+trainset = data.build_full_trainset()
+algo.fit(trainset)
+
+place_ids = ratings['Place_Id'].unique()
+
+# user_id = 'U1003'
+# recommendations = [(pid, algo.predict(user_id, pid).est) for pid in place_ids]
+# recommendations = sorted(recommendations, key=lambda x: x[1], reverse=True)
+#
+# print("Top Recommendations for User:", user_id)
+# for pid, score in recommendations[:5]:
+#     name = places[places['Place_Id'] == pid]['Place_Name'].values[0]
+#     print(f"{name} (Predicted Rating: {score:.2f})")
+
+users_df = pd.read_csv('data/part2/user.csv')
+for user_id_to_recommend in users_df['User_Id']:
+    recommendations = [(pid, algo.predict(user_id_to_recommend, pid).est) for pid in place_ids]
+    recommendations = sorted(recommendations, key=lambda x: x[1], reverse=True)
+    print("\n**Top 5 Recommendations for User:**", user_id_to_recommend)
+    for pid, score in recommendations[:5]:
+        name = places[places['Place_Id'] == pid]['Place_Name'].values[0]
+        print(f"- {name} (Predicted Rating: {score:.2f})")
